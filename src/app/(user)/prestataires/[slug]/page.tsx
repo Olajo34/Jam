@@ -2,10 +2,18 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { formatFCFA } from "@/lib/utils";
 import { auth } from "@/lib/auth";
+import { ReviewForm } from "./ReviewForm";
 import Link from "next/link";
 
-export default async function PrestatairePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PrestatairePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ avis?: string }>;
+}) {
   const { slug } = await params;
+  const { avis: avisBookingId } = await searchParams;
   const session = await auth();
 
   const prestataire = await prisma.prestataire.findUnique({
@@ -23,6 +31,24 @@ export default async function PrestatairePage({ params }: { params: Promise<{ sl
   });
 
   if (!prestataire) notFound();
+
+  // Vérifie que le booking avis est éligible
+  let reviewBooking: { id: string } | null = null;
+  if (avisBookingId && session) {
+    const booking = await prisma.booking.findUnique({
+      where: { id: avisBookingId },
+      include: { review: true },
+    });
+    if (
+      booking &&
+      booking.userId === session.user.id &&
+      booking.prestataireId === prestataire.id &&
+      booking.status === "COMPLETED" &&
+      !booking.review
+    ) {
+      reviewBooking = { id: booking.id };
+    }
+  }
 
   const isGold = prestataire.subscription?.plan === "GOLD";
 
@@ -69,6 +95,13 @@ export default async function PrestatairePage({ params }: { params: Promise<{ sl
 
       {prestataire.description && (
         <p className="text-[var(--color-muted-foreground)] mb-8 leading-relaxed">{prestataire.description}</p>
+      )}
+
+      {/* Formulaire de notation (si ?avis=bookingId et éligible) */}
+      {reviewBooking && (
+        <div className="mb-10">
+          <ReviewForm bookingId={reviewBooking.id} businessName={prestataire.businessName} />
+        </div>
       )}
 
       {/* Services */}
