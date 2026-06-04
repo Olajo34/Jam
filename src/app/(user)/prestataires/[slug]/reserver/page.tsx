@@ -21,6 +21,8 @@ export default async function ReserverPage({
     where: { slug, enrollmentStatus: "APPROVED" },
     include: {
       services: { where: { status: "ACTIVE" }, include: { category: true }, orderBy: { price: "asc" } },
+      availabilities: { where: { isActive: true } },
+      unavailableDates: { where: { date: { gte: new Date() } } },
     },
   });
   if (!prestataire) notFound();
@@ -30,16 +32,45 @@ export default async function ReserverPage({
     ? prestataire.services.find((s) => s.id === serviceId) ?? prestataire.services[0]
     : prestataire.services[0];
 
-  // Generate next 7 days time slots
+  // Générer les créneaux selon les disponibilités du prestataire
   const today = new Date();
+  const blockedDates = new Set(
+    prestataire.unavailableDates.map((d) => new Date(d.date).toISOString().split("T")[0])
+  );
+
   const slots: { date: string; label: string; times: string[] }[] = [];
-  for (let d = 0; d < 7; d++) {
+  for (let d = 0; d < 14; d++) {
     const day = new Date(today);
     day.setDate(today.getDate() + d + 1);
     const dateStr = day.toISOString().split("T")[0];
+    const dayOfWeek = day.getDay();
+
+    // Vérifier si cette date est bloquée
+    if (blockedDates.has(dateStr)) continue;
+
+    // Chercher les disponibilités pour ce jour
+    const avail = prestataire.availabilities.find((a) => a.dayOfWeek === dayOfWeek);
+
+    let times: string[];
+    if (avail) {
+      // Générer les créneaux toutes les heures entre startTime et endTime
+      times = [];
+      const [startH] = avail.startTime.split(":").map(Number);
+      const [endH] = avail.endTime.split(":").map(Number);
+      for (let h = startH; h < endH; h++) {
+        times.push(`${String(h).padStart(2, "0")}:00`);
+      }
+    } else {
+      // Pas de disponibilité définie → créneaux par défaut
+      times = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
+    }
+
+    if (times.length === 0) continue;
+
     const label = day.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
-    const times = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
     slots.push({ date: dateStr, label, times });
+
+    if (slots.length >= 7) break;
   }
 
   return (

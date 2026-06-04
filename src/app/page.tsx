@@ -24,26 +24,47 @@ const PLANS = [
   {
     key: "free",
     label: "Gratuit",
-    price: "0 FCFA",
+    price: "0 XAF",
     period: "jusqu'à 10 réservations/mois",
     featured: false,
-    features: ["Profil prestataire", "Catalogue de services", "Paiement mobile money", "10 réservations/mois"],
+    features: [
+      "Profil prestataire",
+      "Catalogue de services",
+      "Paiement mobile money",
+      "10 réservations/mois",
+      "✦ Manou (aperçu limité)",
+    ],
+    manou: "aperçu",
   },
   {
     key: "pro",
     label: "Plan Pro",
-    price: "5 000 FCFA",
+    price: "5 000 XAF",
     period: "par mois · 100 réservations",
     featured: true,
-    features: ["Tout du plan gratuit", "Jusqu'à 100 réservations/mois", "Statistiques avancées", "Support prioritaire"],
+    features: [
+      "Tout du plan gratuit",
+      "Jusqu'à 100 réservations/mois",
+      "Statistiques avancées",
+      "Support prioritaire",
+      "✦ Manou IA — suggestions business",
+    ],
+    manou: "full",
   },
   {
     key: "gold",
     label: "Plan Gold ⭐",
-    price: "15 000 FCFA",
+    price: "15 000 XAF",
     period: "par mois · illimité",
     featured: false,
-    features: ["Réservations illimitées", "Mise en avant dans l'app", "Badge Gold visible", "Support dédié"],
+    features: [
+      "Réservations illimitées",
+      "Mise en avant dans l'app",
+      "Badge Gold visible",
+      "Support dédié",
+      "✦ Manou IA — accès complet prioritaire",
+    ],
+    manou: "full",
   },
 ];
 
@@ -249,14 +270,23 @@ export default async function HomePage() {
       </section>
 
       {/* ── PLANS ────────────────────────────────────────────── */}
-      <section className="py-20 px-5 bg-[var(--color-cream)]">
+      <section className="py-20 px-5 bg-[var(--color-background)]">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-4">
             <h2 className="text-3xl font-display font-semibold text-[var(--color-foreground)] mb-3">
               Développez votre activité avec Jam
             </h2>
             <p className="text-[var(--color-muted-foreground)]">
               Commencez gratuitement. Passez à un plan supérieur quand votre activité décolle.
+            </p>
+          </div>
+          {/* Manou callout */}
+          <div className="flex items-center gap-3 bg-[var(--color-card)] border border-[var(--color-border)] rounded-2xl px-5 py-3 mb-8 max-w-xl mx-auto">
+            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0">
+              <Image src="/images/manou-avatar.jpg" alt="Manou" width={36} height={36} className="w-full h-full object-cover" />
+            </div>
+            <p className="text-sm text-[var(--color-foreground)]">
+              <strong>Manou IA</strong> — votre assistante business — est incluse à partir du <strong>Plan Pro</strong>
             </p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
@@ -265,7 +295,7 @@ export default async function HomePage() {
                 className={`rounded-2xl p-6 flex flex-col border transition-all ${
                   plan.featured
                     ? "bg-[var(--color-primary)] text-white border-transparent shadow-xl shadow-[var(--color-primary)]/25 scale-[1.03]"
-                    : "bg-white border-[var(--color-border)] hover:shadow-lg hover:-translate-y-1"
+                    : "bg-[var(--color-card)] border-[var(--color-border)] hover:shadow-lg hover:-translate-y-1"
                 }`}>
                 <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${plan.featured ? "text-white/60" : "text-[var(--color-muted-foreground)]"}`}>
                   {plan.label}
@@ -275,12 +305,22 @@ export default async function HomePage() {
                   {plan.period}
                 </p>
                 <ul className="space-y-2.5 flex-1">
-                  {plan.features.map((f) => (
-                    <li key={f} className={`flex items-start gap-2 text-sm ${plan.featured ? "text-white/90" : "text-[var(--color-muted-foreground)]"}`}>
-                      <span className={`mt-0.5 font-bold ${plan.featured ? "text-white" : "text-[var(--color-primary)]"}`}>✓</span>
-                      {f}
-                    </li>
-                  ))}
+                  {plan.features.map((f) => {
+                    const isManou = f.startsWith("✦");
+                    return (
+                      <li key={f} className={`flex items-start gap-2 text-sm ${
+                        isManou
+                          ? plan.featured ? "text-amber-200 font-medium" : "text-amber-700 font-medium"
+                          : plan.featured ? "text-white/90" : "text-[var(--color-muted-foreground)]"
+                      }`}>
+                        <span className={`mt-0.5 font-bold ${
+                          isManou ? (plan.featured ? "text-amber-200" : "text-amber-500") :
+                          plan.featured ? "text-white" : "text-[var(--color-primary)]"
+                        }`}>{isManou ? "✦" : "✓"}</span>
+                        {f.replace("✦ ", "")}
+                      </li>
+                    );
+                  })}
                 </ul>
                 <Link href="/inscription?type=prestataire"
                   className={`mt-6 block text-center py-2.5 rounded-full text-sm font-semibold transition-all ${

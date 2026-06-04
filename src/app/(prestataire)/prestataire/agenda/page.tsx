@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { updateBookingStatus } from "@/lib/actions/prestataire";
+import { saveAvailability, addUnavailableDate, removeUnavailableDate } from "@/lib/actions/availability";
 import { formatFCFA } from "@/lib/utils";
 
 const STATUS_CONFIG = {
@@ -12,11 +13,14 @@ const STATUS_CONFIG = {
   NO_SHOW:   { label: "Absent",      color: "bg-red-100 text-red-600",       dot: "bg-red-400" },
 };
 
+const DAY_LABELS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+
 const TABS = [
-  { key: "",           label: "Aujourd'hui" },
-  { key: "upcoming",  label: "À venir" },
-  { key: "past",      label: "Passées" },
-  { key: "pending",   label: "En attente" },
+  { key: "",              label: "Aujourd'hui" },
+  { key: "upcoming",     label: "À venir" },
+  { key: "past",         label: "Passées" },
+  { key: "pending",      label: "En attente" },
+  { key: "disponibilite", label: "Disponibilités" },
 ];
 
 export default async function AgendaPage({
@@ -36,21 +40,33 @@ export default async function AgendaPage({
   const endOfDay = new Date(startOfDay.getTime() + 86400000);
 
   const whereMap: Record<string, object> = {
-    "":         { scheduledAt: { gte: startOfDay, lt: endOfDay } },
-    upcoming:   { scheduledAt: { gte: endOfDay }, status: { in: ["PENDING", "CONFIRMED"] } },
-    past:       { scheduledAt: { lt: startOfDay } },
-    pending:    { status: "PENDING" },
+    "":              { scheduledAt: { gte: startOfDay, lt: endOfDay } },
+    upcoming:        { scheduledAt: { gte: endOfDay }, status: { in: ["PENDING", "CONFIRMED"] } },
+    past:            { scheduledAt: { lt: startOfDay } },
+    pending:         { status: "PENDING" },
+    disponibilite:   { scheduledAt: { gte: startOfDay, lt: endOfDay } }, // unused but needed
   };
 
-  const bookings = await prisma.booking.findMany({
-    where: { prestataireId: prestataire.id, ...whereMap[tab ?? ""] },
-    include: {
-      user: { select: { name: true, email: true, phone: true } },
-      service: { select: { name: true, duration: true, price: true } },
-      payment: { select: { status: true } },
-    },
-    orderBy: { scheduledAt: "asc" },
-  });
+  const [bookings, availabilities, unavailableDates] = await Promise.all([
+    tab === "disponibilite" ? Promise.resolve([]) : prisma.booking.findMany({
+      where: { prestataireId: prestataire.id, ...whereMap[tab ?? ""] },
+      include: {
+        user: { select: { name: true, email: true, phone: true } },
+        service: { select: { name: true, duration: true, price: true } },
+        payment: { select: { status: true } },
+      },
+      orderBy: { scheduledAt: "asc" },
+    }),
+    prisma.availability.findMany({
+      where: { prestataireId: prestataire.id },
+      orderBy: { dayOfWeek: "asc" },
+    }),
+    prisma.unavailableDate.findMany({
+      where: { prestataireId: prestataire.id, date: { gte: new Date() } },
+      orderBy: { date: "asc" },
+      take: 20,
+    }),
+  ]);
 
   // counts for tab badges
   const [todayCount, pendingCount] = await Promise.all([
@@ -92,7 +108,112 @@ export default async function AgendaPage({
         })}
       </div>
 
+      {/* ── Onglet Disponibilités ── */}
+      {tab === "disponibilite" && (
+        <div className="space-y-6">
+          {/* Horaires hebdomadaires */}
+          <div className="bg-white rounded-2xl border border-[var(--color-border)]">
+            <div className="px-6 py-4 border-b border-[var(--color-border)]">
+              <h2 className="font-semibold text-[var(--color-foreground)]">Horaires hebdomadaires</h2>
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">Définissez vos jours et heures de travail</p>
+            </div>
+            <form action={saveAvailability} className="p-5 space-y-3">
+              {[1, 2, 3, 4, 5, 6, 0].map((day) => {
+                const avail = availabilities.find((a) => a.dayOfWeek === day);
+                return (
+                  <div key={day} className="flex items-center gap-4 py-2 border-b border-[var(--color-border)] last:border-0">
+                    <label className="flex items-center gap-2 w-32 shrink-0">
+                      <input
+                        type="checkbox"
+                        name={`day_${day}_active`}
+                        defaultChecked={avail?.isActive ?? (day !== 0)}
+                        className="accent-[var(--color-primary)] w-4 h-4"
+                      />
+                      <span className="text-sm font-medium text-[var(--color-foreground)]">{DAY_LABELS[day]}</span>
+                    </label>
+                    <div className="flex items-center gap-2 flex-1">
+                      <input
+                        type="time"
+                        name={`day_${day}_start`}
+                        defaultValue={avail?.startTime ?? "09:00"}
+                        className="input-base py-1.5 text-sm w-28"
+                      />
+                      <span className="text-[var(--color-muted-foreground)] text-sm">→</span>
+                      <input
+                        type="time"
+                        name={`day_${day}_end`}
+                        defaultValue={avail?.endTime ?? "18:00"}
+                        className="input-base py-1.5 text-sm w-28"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+              <button
+                type="submit"
+                className="w-full py-2.5 rounded-full text-sm font-medium text-white jam-gradient hover:opacity-90 mt-2"
+              >
+                Enregistrer les horaires
+              </button>
+            </form>
+          </div>
+
+          {/* Dates indisponibles */}
+          <div className="bg-white rounded-2xl border border-[var(--color-border)]">
+            <div className="px-6 py-4 border-b border-[var(--color-border)]">
+              <h2 className="font-semibold text-[var(--color-foreground)]">Dates indisponibles</h2>
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">Congés, vacances, absences exceptionnelles</p>
+            </div>
+            <div className="p-5 space-y-4">
+              <form action={addUnavailableDate} className="flex gap-3 flex-wrap">
+                <input
+                  type="date"
+                  name="date"
+                  min={new Date().toISOString().split("T")[0]}
+                  required
+                  className="input-base text-sm flex-1 min-w-40"
+                />
+                <input
+                  type="text"
+                  name="reason"
+                  placeholder="Raison (optionnel)"
+                  className="input-base text-sm flex-1 min-w-40"
+                />
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-full text-sm font-medium text-white jam-gradient hover:opacity-90 shrink-0"
+                >
+                  + Bloquer
+                </button>
+              </form>
+
+              {unavailableDates.length === 0 && (
+                <p className="text-sm text-[var(--color-muted-foreground)] text-center py-4">Aucune date bloquée</p>
+              )}
+              <div className="space-y-2">
+                {unavailableDates.map((d) => (
+                  <div key={d.id} className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-red-50 border border-red-100">
+                    <div>
+                      <p className="text-sm font-medium text-red-700">
+                        {new Date(d.date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
+                      </p>
+                      {d.reason && <p className="text-xs text-red-500">{d.reason}</p>}
+                    </div>
+                    <form action={removeUnavailableDate.bind(null, d.id)}>
+                      <button type="submit" className="text-xs text-red-400 hover:text-red-600 px-2 py-1 rounded-lg hover:bg-red-100">
+                        Supprimer
+                      </button>
+                    </form>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Bookings */}
+      {tab !== "disponibilite" && (
       <div className="space-y-3">
         {bookings.length === 0 && (
           <div className="bg-white rounded-2xl border border-[var(--color-border)] p-12 text-center text-[var(--color-muted-foreground)]">
@@ -171,6 +292,7 @@ export default async function AgendaPage({
           );
         })}
       </div>
+      )}
     </div>
   );
 }

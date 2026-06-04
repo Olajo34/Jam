@@ -5,21 +5,23 @@
   --color-jam-amber:  #F8B13C;
   --color-jam-coral:  #F2624D;
   --color-jam-plum:   #6E2B5E;
-  --color-jam-dark:   #2A1A28;
+  --color-jam-dark:   #1C0E06;
   --color-jam-green:  #5B7A4B;
-  --color-jam-cream:  #FBF4E9;
+  --color-jam-cream:  #FBF5E8;
 
-  /* ── Semantic tokens ──────────────────────────────────── */
-  --color-background:        #FBF4E9;
-  --color-foreground:        #2A1A28;
+  /* ── Semantic tokens — Palette Ivoire & Caramel ───────── */
+  --color-background:        #EAD9BB;   /* sable chaud / marron clair */
+  --color-foreground:        #1E0C04;   /* espresso profond */
   --color-primary:           #6E2B5E;
   --color-primary-hover:     #5a2250;
   --color-secondary:         #F2624D;
   --color-accent:            #F8B13C;
-  --color-muted:             #f0e8d8;
-  --color-muted-foreground:  #7a6070;
-  --color-border:            #e8dac8;
-  --color-card:              #FFFFFF;
+  --color-muted:             #DEC49A;   /* caramel moyen */
+  --color-muted-foreground:  #7A5030;   /* cognac */
+  --color-border:            #C9A87A;   /* bordure caramel doré */
+  --color-card:              #FBF5E8;   /* ivoire pur */
+  --color-cream:             #FBF5E8;   /* alias ivoire */
+  --color-dark:              #1C0E06;   /* chocolat noir */
 
   /* ── Typography ──────────────────────────────────────── */
   --font-display: "Fraunces", Georgia, serif;
@@ -33,9 +35,9 @@
   --radius-2xl:  2rem;
   --radius-full: 9999px;
 
-  /* ── Shadows ─────────────────────────────────────────── */
-  --shadow-card: 0 2px 16px 0 rgba(110,43,94,.07), 0 1px 4px 0 rgba(110,43,94,.05);
-  --shadow-pop:  0 8px 32px 0 rgba(110,43,94,.14), 0 2px 8px 0 rgba(110,43,94,.08);
+  /* ── Shadows — plus chaleureuses ─────────────────────── */
+  --shadow-card: 0 2px 16px 0 rgba(110,60,10,.09), 0 1px 4px 0 rgba(110,60,10,.06);
+  --shadow-pop:  0 8px 32px 0 rgba(110,60,10,.16), 0 2px 8px 0 rgba(110,60,10,.10);
 }
 
 /* ── Base ─────────────────────────────────────────────────── */
@@ -73,7 +75,7 @@
     padding: 0.625rem 1rem;
     border-radius: 0.875rem;
     border: 1.5px solid var(--color-border);
-    background: var(--color-cream, #FBF4E9);
+    background: var(--color-card);
     font-size: 0.875rem;
     color: var(--color-foreground);
     outline: none;
@@ -103,21 +105,21 @@
     background-clip: text;
   }
 
-  /* Glassmorphism */
+  /* Glassmorphism — teinte ivoire chaude */
   .glass {
-    backdrop-filter: blur(16px) saturate(180%);
-    background: rgba(255,255,255,.72);
-    border: 1px solid rgba(255,255,255,.45);
+    backdrop-filter: blur(20px) saturate(160%);
+    background: rgba(251,245,232,.78);
+    border: 1px solid rgba(201,168,122,.35);
   }
   .glass-dark {
     backdrop-filter: blur(16px) saturate(180%);
-    background: rgba(42,26,40,.72);
-    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(28,14,6,.80);
+    border: 1px solid rgba(201,168,122,.12);
   }
 
-  /* Card */
+  /* Card — ivoire avec ombre chaude */
   .card {
-    background: #fff;
+    background: var(--color-card);
     border-radius: 1.25rem;
     border: 1.5px solid var(--color-border);
     box-shadow: var(--shadow-card);
@@ -164,7 +166,7 @@
     to   { background-position: 400px 0; }
   }
   .skeleton {
-    background: linear-gradient(90deg, #f0e8d8 25%, #fef3e2 50%, #f0e8d8 75%);
+    background: linear-gradient(90deg, #DEC49A 25%, #F0DFC0 50%, #DEC49A 75%);
     background-size: 400px 100%;
     animation: shimmer 1.4s infinite linear;
     border-radius: 0.5rem;

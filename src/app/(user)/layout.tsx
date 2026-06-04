@@ -8,7 +8,7 @@ export default async function UserLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--color-cream)]">
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-[var(--color-border)]">
+      <header className="sticky top-0 z-50 bg-[var(--color-card)]/80 backdrop-blur border-b border-[var(--color-border)]">
         <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3">
           <Link href="/">
             <Image src="/jam-logo-primary.svg" alt="Jam" width={80} height={30} />
@@ -40,7 +40,7 @@ export default async function UserLayout({ children }: { children: React.ReactNo
       </header>
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-6">{children}</main>
       {session && <AgentChat />}
-      <nav className="sm:hidden fixed bottom-0 inset-x-0 bg-white border-t border-[var(--color-border)] flex justify-around py-2 z-50">
+      <nav className="sm:hidden fixed bottom-0 inset-x-0 bg-[var(--color-card)] border-t border-[var(--color-border)] flex justify-around py-2 z-50">
         <Link href="/" className="flex flex-col items-center gap-0.5 text-xs text-[var(--color-muted-foreground)]">
           <span className="text-lg">🏠</span> Accueil
         </Link>

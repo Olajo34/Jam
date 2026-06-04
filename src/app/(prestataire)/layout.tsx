@@ -18,7 +18,7 @@ export default async function PrestataireLayout({ children }: { children: React.
   return (
     <div className="min-h-screen flex bg-[var(--color-cream)]">
       {/* Sidebar */}
-      <aside className="hidden md:flex w-60 flex-col bg-white border-r border-[var(--color-border)] py-6 px-4">
+      <aside className="hidden md:flex w-60 flex-col bg-[var(--color-card)] border-r border-[var(--color-border)] py-6 px-4">
         <Link href="/" className="mb-8 px-2">
           <Image src="/jam-logo-primary.svg" alt="Jam" width={90} height={34} />
         </Link>

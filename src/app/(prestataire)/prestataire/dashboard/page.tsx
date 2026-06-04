@@ -231,7 +231,7 @@ export default async function PrestataireDashboard() {
       </div>
 
       {/* Manou suggestions */}
-      <ManouPro />
+      <ManouPro plan={plan} />
 
       {/* Quick actions */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
