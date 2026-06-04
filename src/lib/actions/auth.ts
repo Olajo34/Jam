@@ -20,10 +20,10 @@ export async function registerUser(formData: FormData) {
   const parsed = registerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
-    phone: formData.get("phone"),
+    phone: formData.get("phone") ?? "",
     password: formData.get("password"),
     role: formData.get("role") ?? "USER",
-    niu: formData.get("niu"),
+    niu: formData.get("niu") ?? "",
   });
 
   if (!parsed.success) throw new Error("Données invalides. Vérifiez les champs.");
