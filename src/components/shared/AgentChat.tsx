@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -52,10 +53,14 @@ export function AgentChat() {
       {/* Bouton flottant */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 w-14 h-14 rounded-full jam-gradient shadow-xl flex items-center justify-center text-white text-2xl hover:opacity-90 transition-opacity"
+        className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 w-14 h-14 rounded-full shadow-xl overflow-hidden border-2 border-white hover:scale-105 transition-transform"
         aria-label="Ouvrir Manou"
       >
-        {open ? "✕" : "✨"}
+        {open ? (
+          <div className="w-full h-full jam-gradient flex items-center justify-center text-white text-xl">✕</div>
+        ) : (
+          <Image src="/manou-avatar.jpg" alt="Manou" width={56} height={56} className="w-full h-full object-cover" />
+        )}
       </button>
 
       {/* Fenêtre de chat */}
@@ -63,7 +68,9 @@ export function AgentChat() {
         <div className="fixed bottom-36 right-4 sm:bottom-24 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-h-[70vh] bg-white rounded-2xl shadow-2xl border border-[var(--color-border)] flex flex-col overflow-hidden">
           {/* Header */}
           <div className="jam-gradient px-4 py-3 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-sm font-bold">M</div>
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-white/30 shrink-0">
+              <Image src="/manou-avatar.jpg" alt="Manou" width={32} height={32} className="w-full h-full object-cover" />
+            </div>
             <div>
               <p className="text-white font-semibold text-sm">Manou</p>
               <p className="text-white/70 text-xs">Assistante beauté & bien-être · 24h/24</p>

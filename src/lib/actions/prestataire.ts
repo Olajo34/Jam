@@ -115,6 +115,9 @@ export async function createService(formData: FormData) {
 
   if (!parsed.success) throw new Error("Données invalides.");
 
+  const photosRaw = (formData.get("photos") as string) ?? "";
+  const photos = photosRaw.split(",").map((u) => u.trim()).filter((u) => u.startsWith("http"));
+
   await prisma.service.create({
     data: {
       prestataireId: prestataire.id,
@@ -123,6 +126,7 @@ export async function createService(formData: FormData) {
       categoryId: parsed.data.categoryId || null,
       duration: parsed.data.duration,
       price: parsed.data.price,
+      photos,
     },
   });
 
@@ -152,6 +156,9 @@ export async function updateService(serviceId: string, formData: FormData) {
 
   if (!parsed.success) throw new Error("Données invalides.");
 
+  const photosRaw = (formData.get("photos") as string) ?? "";
+  const photos = photosRaw.split(",").map((u) => u.trim()).filter((u) => u.startsWith("http"));
+
   await prisma.service.update({
     where: { id: serviceId },
     data: {
@@ -160,6 +167,7 @@ export async function updateService(serviceId: string, formData: FormData) {
       categoryId: parsed.data.categoryId || null,
       duration: parsed.data.duration,
       price: parsed.data.price,
+      ...(photos.length > 0 ? { photos } : {}),
     },
   });
 

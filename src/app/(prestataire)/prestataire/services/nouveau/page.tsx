@@ -44,7 +44,7 @@ export function ServiceFormFields({
   defaults,
 }: {
   categories: { id: string; name: string }[];
-  defaults?: { name?: string; description?: string | null; categoryId?: string | null; duration?: number; price?: number };
+  defaults?: { name?: string; description?: string | null; categoryId?: string | null; duration?: number; price?: number; photos?: string[] };
 }) {
   return (
     <>
@@ -88,7 +88,7 @@ export function ServiceFormFields({
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[var(--color-foreground)]">Prix (FCFA) *</label>
+          <label className="text-sm font-medium text-[var(--color-foreground)]">Prix (XAF) *</label>
           <input
             name="price" type="number" required min="0"
             defaultValue={defaults?.price ?? ""}
@@ -96,6 +96,21 @@ export function ServiceFormFields({
             className="input-base"
           />
         </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium text-[var(--color-foreground)]">
+          Photos <span className="font-normal text-[var(--color-muted-foreground)]">(URLs séparées par des virgules)</span>
+        </label>
+        <textarea
+          name="photos" rows={2}
+          defaultValue={defaults?.photos?.join(", ") ?? ""}
+          placeholder="https://... , https://..."
+          className="input-base resize-none text-xs"
+        />
+        <p className="text-xs text-[var(--color-muted-foreground)]">
+          Copiez les liens de vos photos depuis Google Drive, Dropbox ou tout hébergeur d'images. Min. 3 photos pour apparaître dans la recherche.
+        </p>
       </div>
     </>
   );
