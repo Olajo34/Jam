@@ -64,10 +64,8 @@ export async function registerUser(formData: FormData) {
   await signIn("credentials", {
     email: parsed.data.email,
     password: parsed.data.password,
-    redirect: false,
+    redirectTo: parsed.data.role === "PRESTATAIRE" ? "/prestataire/onboarding" : "/",
   });
-
-  redirect(parsed.data.role === "PRESTATAIRE" ? "/prestataire/onboarding" : "/");
 }
 
 const updateProfileSchema = z.object({
