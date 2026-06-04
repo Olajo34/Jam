@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { logOut } from "@/lib/actions/auth";
 
 const NAV_ITEMS = [
   { href: "/prestataire/dashboard", label: "Tableau de bord", icon: "📊" },
@@ -34,10 +35,15 @@ export default async function PrestataireLayout({ children }: { children: React.
             </Link>
           ))}
         </nav>
-        <div className="border-t border-[var(--color-border)] pt-4 mt-4">
+        <div className="border-t border-[var(--color-border)] pt-4 mt-4 space-y-2">
           <p className="px-3 text-xs font-medium text-[var(--color-muted-foreground)] truncate">
-            {session.user.email}
+            {session.user.name ?? session.user.email}
           </p>
+          <form action={logOut}>
+            <button type="submit" className="w-full px-3 py-2 rounded-xl text-xs font-medium text-left text-[var(--color-muted-foreground)] hover:bg-red-50 hover:text-red-600 transition-colors">
+              🚪 Se déconnecter
+            </button>
+          </form>
         </div>
       </aside>
       {/* Content */}

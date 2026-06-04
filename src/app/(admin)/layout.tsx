@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { logOut } from "@/lib/actions/auth";
 
 const NAV_ITEMS = [
   { href: "/admin/dashboard", label: "Vue d'ensemble", icon: "📊" },
@@ -34,11 +35,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </Link>
           ))}
         </nav>
-        <div className="border-t border-white/10 pt-4 mt-4">
+        <div className="border-t border-white/10 pt-4 mt-4 space-y-2">
           <span className="px-3 inline-flex items-center gap-1.5 text-xs font-medium text-white/40">
             <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
             Admin · {session.user.email?.split("@")[0]}
           </span>
+          <form action={logOut}>
+            <button type="submit" className="w-full px-3 py-2 rounded-xl text-xs font-medium text-left text-white/40 hover:bg-white/10 hover:text-white/80 transition-colors">
+              🚪 Se déconnecter
+            </button>
+          </form>
         </div>
       </aside>
       <main className="flex-1 bg-[var(--color-cream)]">
