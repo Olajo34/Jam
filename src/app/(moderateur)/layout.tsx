@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { logOut } from "@/lib/actions/auth";
 
 const NAV_ITEMS = [
+  { href: "/moderateur/dashboard", label: "Vue d'ensemble", icon: "📊" },
   { href: "/moderateur/tickets", label: "Tickets clients", icon: "🎫" },
   { href: "/moderateur/enrollments", label: "Dossiers prestataires", icon: "📋" },
 ];
