@@ -59,7 +59,7 @@ export function AgentChat() {
         {open ? (
           <div className="w-full h-full jam-gradient flex items-center justify-center text-white text-xl">✕</div>
         ) : (
-          <Image src="/manou-avatar.jpg" alt="Manou" width={56} height={56} className="w-full h-full object-cover" />
+          <Image src="/images/manou-avatar.jpg" alt="Manou" width={56} height={56} className="w-full h-full object-cover" />
         )}
       </button>
 
@@ -69,7 +69,7 @@ export function AgentChat() {
           {/* Header */}
           <div className="jam-gradient px-4 py-3 flex items-center gap-3">
             <div className="w-8 h-8 rounded-full overflow-hidden border border-white/30 shrink-0">
-              <Image src="/manou-avatar.jpg" alt="Manou" width={32} height={32} className="w-full h-full object-cover" />
+              <Image src="/images/manou-avatar.jpg" alt="Manou" width={32} height={32} className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="text-white font-semibold text-sm">Manou</p>

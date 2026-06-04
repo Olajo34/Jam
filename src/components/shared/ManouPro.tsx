@@ -21,7 +21,7 @@ export function ManouPro() {
     <div className="bg-white rounded-2xl border border-[var(--color-border)]">
       <div className="px-5 py-4 border-b border-[var(--color-border)] flex items-center gap-3">
         <div className="w-8 h-8 rounded-xl overflow-hidden shrink-0">
-          <Image src="/manou-avatar.jpg" alt="Manou" width={32} height={32} className="w-full h-full object-cover" />
+          <Image src="/images/manou-avatar.jpg" alt="Manou" width={32} height={32} className="w-full h-full object-cover" />
         </div>
         <div>
           <p className="font-semibold text-[var(--color-foreground)] text-sm">Manou — Suggestions business</p>
