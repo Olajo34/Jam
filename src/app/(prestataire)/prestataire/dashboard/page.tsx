@@ -9,13 +9,25 @@ export default async function PrestataireDashboard() {
   const session = await auth();
   if (!session) redirect("/connexion");
 
-  const prestataire = await prisma.prestataire.findUnique({
-    where: { userId: session.user.id },
-    include: {
-      subscription: true,
-      _count: { select: { bookings: true, services: true, reviews: true } },
-    },
-  });
+  let prestataire;
+  try {
+    prestataire = await prisma.prestataire.findUnique({
+      where: { userId: session.user.id },
+      include: {
+        subscription: true,
+        _count: { select: { bookings: true, services: true, reviews: true } },
+      },
+    });
+  } catch (err) {
+    console.error("[Dashboard] Erreur DB:", err);
+    return (
+      <div className="p-8 bg-red-50 rounded-2xl border border-red-200">
+        <p className="font-semibold text-red-700 mb-2">Erreur de connexion à la base de données</p>
+        <p className="text-sm text-red-600">Vérifiez que Supabase est actif et que DATABASE_URL est défini dans Vercel.</p>
+        <pre className="text-xs mt-3 text-red-500 overflow-auto">{String(err)}</pre>
+      </div>
+    );
+  }
 
   if (!prestataire) redirect("/prestataire/onboarding");
 
