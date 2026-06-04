@@ -1,0 +1,18 @@
+<svg width="420" height="160" viewBox="0 0 420 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="jam logo">
+  <defs>
+    <linearGradient id="jamSunLogo" x1="20" y1="28" x2="92" y2="132" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8B13C"/>
+      <stop offset="0.45" stop-color="#F2624D"/>
+      <stop offset="1" stop-color="#6E2B5E"/>
+    </linearGradient>
+  </defs>
+  <!-- symbol -->
+  <g transform="translate(16,22)">
+    <path d="M50 11 C50 11 79 48 79 66 C79 82.02 66.02 95 50 95 C33.98 95 21 82.02 21 66 C21 48 50 11 50 11 Z" fill="url(#jamSunLogo)"/>
+    <ellipse cx="39" cy="61" rx="9" ry="12" fill="#FFFFFF" opacity="0.16"/>
+    <path d="M58 14 C70 10 79 16 76 29 C64 32 55 25 58 14 Z" fill="#5B7A4B"/>
+    <path d="M62 26 C66 22 71 18 74 16" stroke="#FBF4E9" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+  </g>
+  <!-- wordmark (set in Fraunces; outline before final production) -->
+  <text x="138" y="104" font-family="Fraunces, Georgia, serif" font-size="92" font-weight="600" letter-spacing="-2" fill="#2A1A28">jam</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg width="240" height="240" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jam">
+  <defs>
+    <linearGradient id="jamSun" x1="24" y1="14" x2="96" y2="116" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8B13C"/>
+      <stop offset="0.45" stop-color="#F2624D"/>
+      <stop offset="1" stop-color="#6E2B5E"/>
+    </linearGradient>
+  </defs>
+  <!-- dollop / drop / pin -->
+  <path d="M60 13 C60 13 95 58 95 80 C95 99.33 79.33 115 60 115 C40.67 115 25 99.33 25 80 C25 58 60 13 60 13 Z" fill="url(#jamSun)"/>
+  <!-- soft inner highlight -->
+  <ellipse cx="47" cy="74" rx="11" ry="15" fill="#FFFFFF" opacity="0.16"/>
+  <!-- leaf -->
+  <path d="M70 17 C84 12 95 19 92 35 C78 39 67 31 70 17 Z" fill="#5B7A4B"/>
+  <path d="M75 31 C80 26 86 21 90 19" stroke="#FBF4E9" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+</svg>

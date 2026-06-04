@@ -1,0 +1,15 @@
+<svg width="240" height="240" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jam app icon">
+  <defs>
+    <linearGradient id="jamTile" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8B13C"/>
+      <stop offset="0.5" stop-color="#F2624D"/>
+      <stop offset="1" stop-color="#6E2B5E"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="120" height="120" rx="28" fill="url(#jamTile)"/>
+  <!-- cream dollop -->
+  <path d="M60 26 C60 26 86 60 86 76 C86 90.36 74.36 102 60 102 C45.64 102 34 90.36 34 76 C34 60 60 26 60 26 Z" fill="#FBF4E9"/>
+  <!-- leaf -->
+  <path d="M68 30 C79 26 87 32 84 44 C73 47 65 41 68 30 Z" fill="#FBF4E9" opacity="0.92"/>
+  <ellipse cx="51" cy="72" rx="8" ry="11" fill="#F2624D" opacity="0.14"/>
+</svg>
