@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: "/prestataire/abonnement", label: "Abonnement", icon: "⭐" },
 ];
 
+
 export default async function PrestataireLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session || session.user.role !== "PRESTATAIRE") redirect("/connexion");

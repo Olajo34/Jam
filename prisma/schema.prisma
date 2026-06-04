@@ -141,8 +141,11 @@ model Prestataire {
   city             String?
   phone            String?
   coverImage       String?
-  enrollmentStatus EnrollmentStatus @default(PENDING)
+  niu              String?
+  enrollmentStatus EnrollmentStatus @default(APPROVED)
   isFeatured       Boolean          @default(false)
+  latitude         Float?
+  longitude        Float?
   rating           Float            @default(0)
   totalReviews     Int              @default(0)
   createdAt        DateTime         @default(now())
