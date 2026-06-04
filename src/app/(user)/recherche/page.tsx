@@ -4,7 +4,7 @@ import { GeolocationButton } from "@/components/shared/GeolocationButton";
 import Link from "next/link";
 import { Suspense } from "react";
 
-const CITIES = ["Abidjan", "Bouaké", "Daloa", "San-Pédro", "Yamoussoukro", "Korhogo", "Man"];
+const CITIES = ["Douala", "Yaoundé", "Bafoussam", "Bamenda", "Garoua", "Kribi", "Limbé", "Ngaoundéré"];
 
 export default async function RecherchePage({
   searchParams,

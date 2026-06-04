@@ -5,8 +5,9 @@ import { createPrestataireProfile } from "@/lib/actions/prestataire";
 import { LocationPicker } from "@/components/shared/LocationPicker";
 
 const CITIES = [
-  "Abidjan", "Bouaké", "Daloa", "San-Pédro", "Yamoussoukro",
-  "Korhogo", "Man", "Gagnoa", "Abengourou", "Divo",
+  "Douala", "Yaoundé", "Bafoussam", "Bamenda", "Garoua",
+  "Maroua", "Ngaoundéré", "Bertoua", "Kribi", "Limbé",
+  "Brazzaville", "Libreville", "N'Djamena", "Bangui",
 ];
 
 export default async function OnboardingPage() {

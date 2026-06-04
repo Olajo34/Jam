@@ -37,18 +37,22 @@ export function formatDistance(km: number): string {
   return `${Math.round(km)} km`;
 }
 
-// Approximate city centres in Côte d'Ivoire (and neighbouring capitals)
+// Coordonnées des centres-villes — zone CEMAC (Cameroun + capitales régionales)
 export const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
-  Abidjan:       { lat:  5.3600, lng: -4.0083 },
-  Bouaké:        { lat:  7.6900, lng: -5.0300 },
-  Daloa:         { lat:  6.8750, lng: -6.4489 },
-  "San-Pédro":   { lat:  4.7485, lng: -6.6363 },
-  Yamoussoukro:  { lat:  6.8276, lng: -5.2893 },
-  Korhogo:       { lat:  9.4578, lng: -5.6291 },
-  Man:           { lat:  7.4126, lng: -7.5526 },
-  Gagnoa:        { lat:  6.1319, lng: -5.9505 },
-  Abengourou:    { lat:  6.7297, lng: -3.4964 },
-  Divo:          { lat:  5.8375, lng: -5.3574 },
+  Douala:        { lat:  4.0511, lng:  9.7679 },
+  Yaoundé:       { lat:  3.8480, lng: 11.5021 },
+  Bafoussam:     { lat:  5.4737, lng: 10.4176 },
+  Bamenda:       { lat:  5.9631, lng: 10.1591 },
+  Garoua:        { lat:  9.3008, lng: 13.3978 },
+  Maroua:        { lat: 10.5907, lng: 14.3147 },
+  Ngaoundéré:    { lat:  7.3267, lng: 13.5840 },
+  Bertoua:       { lat:  4.5788, lng: 13.6859 },
+  Kribi:         { lat:  2.9391, lng:  9.9087 },
+  Limbé:         { lat:  4.0233, lng:  9.2056 },
+  Brazzaville:   { lat: -4.2634, lng: 15.2429 },
+  Libreville:    { lat:  0.3901, lng:  9.4544 },
+  "N'Djamena":   { lat: 12.1348, lng: 15.0557 },
+  Bangui:        { lat:  4.3609, lng: 18.5582 },
 };
 
 // Assign city-centre coords to a prestataire that has no explicit lat/lng

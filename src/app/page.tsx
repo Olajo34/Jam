@@ -51,21 +51,21 @@ const TESTIMONIALS = [
   {
     name: "Aminata K.",
     role: "Cliente",
-    city: "Abidjan",
-    text: "J'ai trouvé ma coiffeuse en 2 minutes et payé via Orange Money. Jam c'est la révolution !",
+    city: "Douala",
+    text: "J'ai trouvé ma coiffeuse en 2 minutes et payé via MTN MoMo. Jam c'est la révolution !",
     img: "https://images.unsplash.com/photo-1713845784497-fe3d7ed176d8?w=80&q=75",
   },
   {
     name: "Fatou D.",
     role: "Prestataire coiffure",
-    city: "Bouaké",
+    city: "Yaoundé",
     text: "Depuis Jam, j'ai 3× plus de clients. Le plan Gold m'a vraiment boostée.",
     img: "https://images.unsplash.com/photo-1763347120836-5afd4a60fc01?w=80&q=75",
   },
   {
     name: "Mariam T.",
     role: "Cliente",
-    city: "Yamoussoukro",
+    city: "Bafoussam",
     text: "Simple, beau, rapide. Je réserve mes soins sans me déplacer, c'est parfait.",
     img: "https://images.unsplash.com/photo-1632828167073-bd533fe560cb?w=80&q=75",
   },
@@ -124,7 +124,7 @@ export default async function HomePage() {
               près de chez vous
             </h1>
             <p className="animate-fade-up animate-fade-up-delay-2 text-lg text-[var(--color-muted-foreground)] leading-relaxed mb-10 max-w-lg">
-              Coiffure, massage, soin du visage, manucure… Trouvez, réservez et payez en toute sécurité via MTN, Orange Money ou Wave.
+              Coiffure, massage, soin du visage, manucure… Trouvez, réservez et payez en toute sécurité via MTN MoMo ou Orange Money.
             </p>
             <div className="animate-fade-up animate-fade-up-delay-3 flex flex-col sm:flex-row gap-4">
               <Link href="/recherche"
@@ -148,7 +148,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <p className="text-sm text-[var(--color-muted-foreground)]">
-                <strong className="text-[var(--color-foreground)]">+500</strong> prestataires actifs en Côte d'Ivoire
+                <strong className="text-[var(--color-foreground)]">+500</strong> prestataires actifs en zone CEMAC
               </p>
             </div>
           </div>
@@ -324,7 +324,7 @@ export default async function HomePage() {
       <footer className="bg-[var(--color-dark)] text-white/50 py-8 px-5">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <Image src="/jam-logo-primary.svg" alt="Jam" width={70} height={27} className="brightness-0 invert opacity-60" />
-          <p className="text-sm">© {new Date().getFullYear()} Jam · Beauté & Bien-être · Côte d'Ivoire</p>
+          <p className="text-sm">© {new Date().getFullYear()} Jam · Beauté & Bien-être · Zone CEMAC</p>
           <div className="flex gap-6 text-sm">
             <Link href="/connexion" className="hover:text-white transition-colors">Connexion</Link>
             <Link href="/inscription" className="hover:text-white transition-colors">S'inscrire</Link>

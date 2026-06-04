@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/lib/auth";
+import { AgentChat } from "@/components/shared/AgentChat";
 
 export default async function UserLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -38,6 +39,7 @@ export default async function UserLayout({ children }: { children: React.ReactNo
         </div>
       </header>
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-6">{children}</main>
+      {session && <AgentChat />}
       <nav className="sm:hidden fixed bottom-0 inset-x-0 bg-white border-t border-[var(--color-border)] flex justify-around py-2 z-50">
         <Link href="/" className="flex flex-col items-center gap-0.5 text-xs text-[var(--color-muted-foreground)]">
           <span className="text-lg">🏠</span> Accueil

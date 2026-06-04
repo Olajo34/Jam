@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     .map((b) => `${b.service.name} chez ${b.prestataire.businessName}`)
     .join(", ") || "aucune";
 
-  const systemPrompt = `Tu es Jam, l'assistant de réservation beauté et bien-être en Côte d'Ivoire.
+  const systemPrompt = `Tu es Manou, l'assistante de réservation beauté et bien-être en zone CEMAC.
 Ton rôle : aider le client à trouver et réserver le bon prestataire, 24h/24.
 
 CONTEXTE CLIENT :
