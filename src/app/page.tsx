@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { auth } from "@/lib/auth";
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1527203561188-dae1bc1a417f?w=420&q=80", // tresses — femme noire
@@ -70,7 +71,8 @@ const TESTIMONIALS = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
   return (
     <main className="flex flex-col min-h-screen overflow-hidden">
 
@@ -79,13 +81,27 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto flex items-center justify-between px-5 py-3.5">
           <Image src="/jam-logo-primary.svg" alt="Jam" width={100} height={38} priority />
           <nav className="flex items-center gap-4">
-            <Link href="/connexion" className="text-sm font-medium text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)] transition-colors">
-              Connexion
-            </Link>
-            <Link href="/inscription"
-              className="px-5 py-2 rounded-full text-sm font-semibold text-white jam-gradient hover:opacity-90 transition-opacity animate-pulse-ring shadow-lg shadow-[#F2624D]/20">
-              S'inscrire
-            </Link>
+            {session ? (
+              <>
+                <Link href="/reservations" className="text-sm font-medium text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)] transition-colors">
+                  Mes réservations
+                </Link>
+                <Link href="/profil"
+                  className="w-9 h-9 rounded-full jam-gradient flex items-center justify-center text-white text-sm font-bold shadow-lg">
+                  {session.user.name?.[0]?.toUpperCase() ?? "U"}
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/connexion" className="text-sm font-medium text-[var(--color-foreground)]/70 hover:text-[var(--color-foreground)] transition-colors">
+                  Connexion
+                </Link>
+                <Link href="/inscription"
+                  className="px-5 py-2 rounded-full text-sm font-semibold text-white jam-gradient hover:opacity-90 transition-opacity animate-pulse-ring shadow-lg shadow-[#F2624D]/20">
+                  S'inscrire
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </header>
