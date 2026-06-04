@@ -42,8 +42,26 @@ export default async function PrestataireLayout({ children }: { children: React.
       </aside>
       {/* Content */}
       <main className="flex-1 flex flex-col">
-        <div className="p-6 md:p-8 flex-1">{children}</div>
+        {/* Header mobile */}
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-[var(--color-card)] border-b border-[var(--color-border)]">
+          <Link href="/">
+            <Image src="/jam-logo-primary.svg" alt="Jam" width={70} height={26} />
+          </Link>
+          <p className="text-xs text-[var(--color-muted-foreground)] truncate max-w-[180px]">{session.user.name}</p>
+        </div>
+        <div className="p-4 md:p-8 flex-1 pb-24 md:pb-8">{children}</div>
       </main>
+
+      {/* Navbar mobile */}
+      <nav className="md:hidden fixed bottom-0 inset-x-0 bg-[var(--color-card)] border-t border-[var(--color-border)] flex justify-around py-2 z-50">
+        {NAV_ITEMS.map((item) => (
+          <Link key={item.href} href={item.href}
+            className="flex flex-col items-center gap-0.5 text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] px-2">
+            <span className="text-lg">{item.icon}</span>
+            <span className="truncate max-w-[60px] text-center">{item.label.split(" ")[0]}</span>
+          </Link>
+        ))}
+      </nav>
     </div>
   );
 }
