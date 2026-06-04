@@ -361,13 +361,50 @@ export default async function HomePage() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────────────── */}
-      <footer className="bg-[var(--color-dark)] text-white/50 py-8 px-5">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Image src="/jam-logo-primary.svg" alt="Jam" width={70} height={27} className="brightness-0 invert opacity-60" />
-          <p className="text-sm">© {new Date().getFullYear()} Jam · Beauté & Bien-être · Zone CEMAC</p>
-          <div className="flex gap-6 text-sm">
-            <Link href="/connexion" className="hover:text-white transition-colors">Connexion</Link>
-            <Link href="/inscription" className="hover:text-white transition-colors">S'inscrire</Link>
+      <footer className="bg-[var(--color-dark)] text-white/50 py-14 px-5">
+        <div className="max-w-6xl mx-auto">
+          {/* Top row */}
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-10 mb-10">
+            {/* Brand */}
+            <div className="max-w-xs">
+              <Image src="/jam-logo-primary.svg" alt="Jam" width={80} height={30} className="brightness-0 invert opacity-70 mb-4" />
+              <p className="text-sm leading-relaxed">
+                Jam est une marque du groupe <span className="text-white/80 font-medium">Elokan CS</span>, spécialiste du développement de plateformes numériques adaptées aux marchés africains.
+              </p>
+            </div>
+
+            {/* Links grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-sm">
+              <div>
+                <p className="text-white/30 uppercase tracking-widest text-xs font-semibold mb-3">Plateforme</p>
+                <ul className="space-y-2">
+                  <li><Link href="/recherche" className="hover:text-white transition-colors">Explorer</Link></li>
+                  <li><Link href="/connexion" className="hover:text-white transition-colors">Connexion</Link></li>
+                  <li><Link href="/inscription" className="hover:text-white transition-colors">S'inscrire</Link></li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-white/30 uppercase tracking-widest text-xs font-semibold mb-3">À propos</p>
+                <ul className="space-y-2">
+                  <li><Link href="/a-propos" className="hover:text-white transition-colors">À propos de Jam</Link></li>
+                  <li><Link href="/elokan" className="hover:text-white transition-colors">Groupe Elokan CS</Link></li>
+                  <li><Link href="/accessibilite" className="hover:text-white transition-colors">Accessibilité</Link></li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-white/30 uppercase tracking-widest text-xs font-semibold mb-3">Légal</p>
+                <ul className="space-y-2">
+                  <li><Link href="/cgu" className="hover:text-white transition-colors">CGU</Link></li>
+                  <li><Link href="/contact" className="hover:text-white transition-colors">Nous contacter</Link></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom row */}
+          <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <p>© {new Date().getFullYear()} Jam by Elokan CS · Beauté & Bien-être · Zone CEMAC</p>
+            <p className="text-white/30">Tous droits réservés</p>
           </div>
         </div>
       </footer>
