@@ -59,3 +59,39 @@ export async function removeUnavailableDate(id: string) {
 
   revalidatePath("/prestataire/agenda");
 }
+
+export async function addBlockedSlot(formData: FormData) {
+  const session = await auth();
+  if (!session || session.user.role !== "PRESTATAIRE") throw new Error("Non autorisé");
+
+  const prestataire = await prisma.prestataire.findUnique({ where: { userId: session.user.id } });
+  if (!prestataire) throw new Error("Profil introuvable");
+
+  const date = formData.get("date") as string;
+  const time = formData.get("time") as string;
+  const reason = (formData.get("reason") as string) || null;
+
+  if (!date || !time) throw new Error("Date et heure requises");
+
+  await prisma.blockedSlot.upsert({
+    where: { prestataireId_date_time: { prestataireId: prestataire.id, date, time } },
+    create: { prestataireId: prestataire.id, date, time, reason },
+    update: { reason },
+  });
+
+  revalidatePath("/prestataire/agenda");
+}
+
+export async function removeBlockedSlot(id: string) {
+  const session = await auth();
+  if (!session || session.user.role !== "PRESTATAIRE") return;
+
+  const prestataire = await prisma.prestataire.findUnique({ where: { userId: session.user.id } });
+  if (!prestataire) return;
+
+  await prisma.blockedSlot.deleteMany({
+    where: { id, prestataireId: prestataire.id },
+  });
+
+  revalidatePath("/prestataire/agenda");
+}

@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { updateBookingStatus } from "@/lib/actions/prestataire";
-import { saveAvailability, addUnavailableDate, removeUnavailableDate } from "@/lib/actions/availability";
+import { saveAvailability, addUnavailableDate, removeUnavailableDate, addBlockedSlot, removeBlockedSlot } from "@/lib/actions/availability";
 import { formatFCFA } from "@/lib/utils";
 
 const STATUS_CONFIG = {
@@ -47,7 +47,7 @@ export default async function AgendaPage({
     disponibilite:   { scheduledAt: { gte: startOfDay, lt: endOfDay } }, // unused but needed
   };
 
-  const [bookings, availabilities, unavailableDates] = await Promise.all([
+  const [bookings, availabilities, unavailableDates, blockedSlots] = await Promise.all([
     tab === "disponibilite" ? Promise.resolve([]) : prisma.booking.findMany({
       where: { prestataireId: prestataire.id, ...whereMap[tab ?? ""] },
       include: {
@@ -65,6 +65,11 @@ export default async function AgendaPage({
       where: { prestataireId: prestataire.id, date: { gte: new Date() } },
       orderBy: { date: "asc" },
       take: 20,
+    }),
+    prisma.blockedSlot.findMany({
+      where: { prestataireId: prestataire.id },
+      orderBy: [{ date: "asc" }, { time: "asc" }],
+      take: 50,
     }),
   ]);
 
@@ -162,7 +167,7 @@ export default async function AgendaPage({
           <div className="bg-white rounded-2xl border border-[var(--color-border)]">
             <div className="px-6 py-4 border-b border-[var(--color-border)]">
               <h2 className="font-semibold text-[var(--color-foreground)]">Dates indisponibles</h2>
-              <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">Congés, vacances, absences exceptionnelles</p>
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">Congés, vacances, absences d'une journée entière</p>
             </div>
             <div className="p-5 space-y-4">
               <form action={addUnavailableDate} className="flex gap-3 flex-wrap">
@@ -183,12 +188,12 @@ export default async function AgendaPage({
                   type="submit"
                   className="px-5 py-2 rounded-full text-sm font-medium text-white jam-gradient hover:opacity-90 shrink-0"
                 >
-                  + Bloquer
+                  + Bloquer la journée
                 </button>
               </form>
 
               {unavailableDates.length === 0 && (
-                <p className="text-sm text-[var(--color-muted-foreground)] text-center py-4">Aucune date bloquée</p>
+                <p className="text-sm text-[var(--color-muted-foreground)] text-center py-4">Aucune journée bloquée</p>
               )}
               <div className="space-y-2">
                 {unavailableDates.map((d) => (
@@ -202,6 +207,80 @@ export default async function AgendaPage({
                     <form action={removeUnavailableDate.bind(null, d.id)}>
                       <button type="submit" className="text-xs text-red-400 hover:text-red-600 px-2 py-1 rounded-lg hover:bg-red-100">
                         Supprimer
+                      </button>
+                    </form>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Créneaux bloqués — réservations hors plateforme */}
+          <div className="bg-white rounded-2xl border border-[var(--color-border)]">
+            <div className="px-6 py-4 border-b border-[var(--color-border)]">
+              <h2 className="font-semibold text-[var(--color-foreground)]">Créneaux bloqués</h2>
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">
+                Réservation reçue hors plateforme, rendez-vous personnel… Ces créneaux apparaissent grisés aux clients.
+              </p>
+            </div>
+            <div className="p-5 space-y-4">
+              <form action={addBlockedSlot} className="flex gap-3 flex-wrap items-end">
+                <div className="flex flex-col gap-1 flex-1 min-w-36">
+                  <label className="text-xs font-medium text-[var(--color-foreground)]">Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    min={new Date().toISOString().split("T")[0]}
+                    required
+                    className="input-base text-sm"
+                  />
+                </div>
+                <div className="flex flex-col gap-1 flex-1 min-w-28">
+                  <label className="text-xs font-medium text-[var(--color-foreground)]">Heure</label>
+                  <input
+                    type="time"
+                    name="time"
+                    step="3600"
+                    required
+                    className="input-base text-sm"
+                  />
+                </div>
+                <div className="flex flex-col gap-1 flex-1 min-w-36">
+                  <label className="text-xs font-medium text-[var(--color-foreground)]">Raison (optionnel)</label>
+                  <input
+                    type="text"
+                    name="reason"
+                    placeholder="ex : Rendez-vous externe"
+                    className="input-base text-sm"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-full text-sm font-medium text-white jam-gradient hover:opacity-90 shrink-0"
+                >
+                  Griser ce créneau
+                </button>
+              </form>
+
+              {blockedSlots.length === 0 && (
+                <p className="text-sm text-[var(--color-muted-foreground)] text-center py-4">
+                  Aucun créneau bloqué manuellement
+                </p>
+              )}
+              <div className="space-y-2">
+                {blockedSlots.map((s) => (
+                  <div key={s.id} className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-100">
+                    <div>
+                      <p className="text-sm font-medium text-[var(--color-foreground)]">
+                        {new Date(`${s.date}T00:00:00`).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
+                        {" à "}
+                        <span className="text-[var(--color-primary)]">{s.time}</span>
+                      </p>
+                      {s.reason && <p className="text-xs text-[var(--color-muted-foreground)]">{s.reason}</p>}
+                    </div>
+                    <form action={removeBlockedSlot.bind(null, s.id)}>
+                      <button type="submit" className="text-xs text-[var(--color-muted-foreground)] hover:text-red-600 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">
+                        Débloquer
                       </button>
                     </form>
                   </div>

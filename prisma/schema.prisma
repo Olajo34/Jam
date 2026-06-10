@@ -159,6 +159,7 @@ model Prestataire {
   reviews           Review[]
   availabilities    Availability[]
   unavailableDates  UnavailableDate[]
+  blockedSlots      BlockedSlot[]
 
   @@index([city])
   @@index([isFeatured])
@@ -191,6 +192,20 @@ model UnavailableDate {
 
   prestataire Prestataire @relation(fields: [prestataireId], references: [id], onDelete: Cascade)
 
+  @@index([prestataireId, date])
+}
+
+model BlockedSlot {
+  id            String   @id @default(cuid())
+  prestataireId String
+  date          String   // "2025-01-15" YYYY-MM-DD
+  time          String   // "14:00" HH:MM
+  reason        String?
+  createdAt     DateTime @default(now())
+
+  prestataire Prestataire @relation(fields: [prestataireId], references: [id], onDelete: Cascade)
+
+  @@unique([prestataireId, date, time])
   @@index([prestataireId, date])
 }
 
