@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1527203561188-dae1bc1a417f?w=420&q=80", // tresses — femme noire
@@ -94,6 +95,12 @@ const TESTIMONIALS = [
 
 export default async function HomePage() {
   const session = await auth();
+
+  // Redirige les rôles internes vers leur dashboard
+  if (session?.user.role === "ADMIN") redirect("/admin/dashboard");
+  if (session?.user.role === "MODERATEUR") redirect("/moderateur/dashboard");
+  if (session?.user.role === "PRESTATAIRE") redirect("/prestataire/dashboard");
+
   return (
     <main className="flex flex-col min-h-screen overflow-hidden">
 

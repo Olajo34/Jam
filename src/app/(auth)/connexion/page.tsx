@@ -1,7 +1,23 @@
 import { signIn } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
-export default function ConnexionPage() {
+const ROLE_REDIRECT: Record<string, string> = {
+  ADMIN: "/admin/dashboard",
+  MODERATEUR: "/moderateur/dashboard",
+  PRESTATAIRE: "/prestataire/dashboard",
+  USER: "/",
+};
+
+export default async function ConnexionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect?: string; error?: string }>;
+}) {
+  const { redirect: redirectTo, error } = await searchParams;
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-[var(--color-border)] p-8">
       <h1 className="text-2xl font-display font-semibold text-[var(--color-foreground)] mb-2">Connexion</h1>
@@ -11,14 +27,28 @@ export default function ConnexionPage() {
           S'inscrire
         </Link>
       </p>
+
+      {error && (
+        <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700">
+          Email ou mot de passe incorrect.
+        </div>
+      )}
+
       <form
-        action={async (formData) => {
+        action={async (formData: FormData) => {
           "use server";
-          await signIn("credentials", {
-            email: formData.get("email"),
-            password: formData.get("password"),
-            redirectTo: "/",
-          });
+          const email = formData.get("email") as string;
+          const password = formData.get("password") as string;
+
+          // Vérifie les credentials pour déterminer le rôle avant signIn
+          const user = await prisma.user.findUnique({ where: { email } });
+          if (!user?.passwordHash) redirect("/connexion?error=1");
+          const valid = await bcrypt.compare(password, user!.passwordHash!);
+          if (!valid) redirect("/connexion?error=1");
+
+          const destination = redirectTo ?? ROLE_REDIRECT[user!.role] ?? "/";
+
+          await signIn("credentials", { email, password, redirectTo: destination });
         }}
         className="flex flex-col gap-4"
       >
