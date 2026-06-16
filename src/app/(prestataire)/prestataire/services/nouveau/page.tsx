@@ -43,7 +43,7 @@ export function ServiceFormFields({
   categories,
   defaults,
 }: {
-  categories: { id: string; name: string }[];
+  categories: { id: string; name: string; icon?: string | null }[];
   defaults?: { name?: string; description?: string | null; categoryId?: string | null; duration?: number; price?: number; photos?: string[] };
 }) {
   return (
@@ -63,7 +63,11 @@ export function ServiceFormFields({
         </label>
         <select name="categoryId" defaultValue={defaults?.categoryId ?? ""} className="input-base">
           <option value="">Choisir une catégorie...</option>
-          {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.icon ? `${c.icon} ${c.name}` : c.name}
+            </option>
+          ))}
         </select>
       </div>
 

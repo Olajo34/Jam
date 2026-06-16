@@ -17,7 +17,7 @@
   --color-secondary:         #B8935A;   /* or champagne */
   --color-accent:            #B8935A;
   --color-muted:             #D8CCBA;   /* lin naturel */
-  --color-muted-foreground:  #7A6555;   /* bois flotté */
+  --color-muted-foreground:  #5C4636;   /* bois flotté — ratio 6.5:1 WCAG AA */
   --color-border:            #DDD0C0;   /* nacre pâle */
   --color-card:              #FDF9F3;   /* blanc cassé / ivoire satin */
   --color-cream:             #FDF9F3;
@@ -71,6 +71,22 @@
   ::selection {
     background: rgba(184,147,90,.22);
     color: var(--color-foreground);
+  }
+
+  /* Focus visible — accessibilité clavier (P1) */
+  :focus-visible {
+    outline: 2px solid #B8935A;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 

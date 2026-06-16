@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import CategoriesSection from "./CategoriesSection";
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1527203561188-dae1bc1a417f?w=420&q=80",
@@ -10,16 +11,6 @@ const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1601642702400-c1544ff700d1?w=420&q=80",
 ];
 
-const CATEGORIES = [
-  { name: "Coiffure",      slug: "coiffure",   img: "https://images.unsplash.com/photo-1527203561188-dae1bc1a417f?w=500&q=80" },
-  { name: "Massage",       slug: "massage",    img: "https://images.unsplash.com/photo-1677682693087-711e24efaa69?w=500&q=80" },
-  { name: "Ongles",        slug: "ongles",     img: "https://images.unsplash.com/photo-1601642702400-c1544ff700d1?w=500&q=80" },
-  { name: "Soins visage",  slug: "soins",      img: "https://images.unsplash.com/photo-1693004925174-d9e06209d0ee?w=500&q=80" },
-  { name: "Maquillage",    slug: "maquillage", img: "https://images.unsplash.com/photo-1628682814595-a3f0816b25ff?w=500&q=80" },
-  { name: "Épilation",     slug: "epilation",  img: "https://images.unsplash.com/photo-1716827173458-8bde30d6c78f?w=500&q=80" },
-  { name: "Barbier",       slug: "barbier",    img: "https://images.unsplash.com/photo-1619233543112-fe382ff3693d?w=500&q=80" },
-  { name: "Bien-être",     slug: "bienetre",   img: "https://images.unsplash.com/photo-1600334129128-685c5582fd35?w=500&q=80" },
-];
 
 const PLANS = [
   {
@@ -105,12 +96,12 @@ export default async function HomePage() {
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
           <Image src="/jam-logo-primary.svg" alt="Jam" width={88} height={34} priority />
           <nav className="flex items-center gap-6">
-            <Link href="/recherche" className="hidden sm:block text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors">
+            <Link href="/recherche" className="hidden sm:block text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors py-3 px-2 min-h-[44px] flex items-center">
               Explorer
             </Link>
             {session ? (
               <>
-                <Link href="/reservations" className="text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors">
+                <Link href="/reservations" className="text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors py-3 px-2 min-h-[44px] flex items-center">
                   Réservations
                 </Link>
                 <Link href="/profil"
@@ -120,7 +111,7 @@ export default async function HomePage() {
               </>
             ) : (
               <>
-                <Link href="/connexion" className="text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors">
+                <Link href="/connexion" className="text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors py-3 px-2 min-h-[44px] flex items-center">
                   Connexion
                 </Link>
                 <Link href="/inscription"
@@ -220,18 +211,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {CATEGORIES.map((cat) => (
-              <Link key={cat.slug} href={`/recherche?categorie=${cat.slug}`}
-                className="group relative overflow-hidden rounded-xl aspect-[3/4] cursor-pointer">
-                <Image src={cat.img} alt={cat.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <p className="text-white font-display font-light text-lg tracking-tight leading-tight">{cat.name}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <CategoriesSection />
         </div>
       </section>
 
@@ -282,9 +262,9 @@ export default async function HomePage() {
             {TESTIMONIALS.map((t, i) => (
               <div key={i} className="bg-[var(--color-background)] rounded-2xl p-7 border border-[var(--color-border)]">
                 {/* Étoiles */}
-                <div className="flex gap-0.5 mb-5">
+                <div className="flex gap-0.5 mb-5" role="img" aria-label="5 étoiles sur 5">
                   {[1,2,3,4,5].map(s => (
-                    <span key={s} className="text-[var(--color-secondary)] text-sm">★</span>
+                    <span key={s} className="text-[var(--color-secondary)] text-sm" aria-hidden="true">★</span>
                   ))}
                 </div>
                 <p className="font-display font-light text-lg italic text-[var(--color-foreground)] leading-[1.6] mb-6">
