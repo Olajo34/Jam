@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
-import { formatFCFA } from "@/lib/utils";
+import { formatFCFA, getCommissionRate } from "@/lib/utils";
 import Link from "next/link";
 import PaymentForm from "./PaymentForm";
 
@@ -14,7 +14,7 @@ export default async function PaiementPage({ params }: { params: Promise<{ booki
     where: { id: bookingId, userId: session.user.id },
     include: {
       service: true,
-      prestataire: { select: { businessName: true, slug: true } },
+      prestataire: { select: { businessName: true, slug: true, subscription: { select: { plan: true } } } },
       payment: true,
       user: { select: { phone: true } },
     },
@@ -24,9 +24,11 @@ export default async function PaiementPage({ params }: { params: Promise<{ booki
   if (booking.payment?.status === "SUCCESS") redirect("/reservations");
 
   const config = await prisma.platformConfig.findUnique({ where: { id: "singleton" } })
-    ?? { commissionRate: 0.05 };
+    ?? { commissionRate: 0.07, proCommissionRate: 0.05, goldCommissionRate: 0.03 };
 
-  const commission = Math.round(booking.service.price * config.commissionRate);
+  const plan = booking.prestataire.subscription?.plan ?? null;
+  const rate = getCommissionRate(plan, config);
+  const commission = Math.round(booking.service.price * rate);
 
   return (
     <div className="max-w-md mx-auto pb-12">
@@ -80,7 +82,7 @@ export default async function PaiementPage({ params }: { params: Promise<{ booki
             </span>
           </div>
           <p className="text-xs text-[var(--color-muted-foreground)] text-right">
-            dont {formatFCFA(commission)} de frais plateforme ({(config.commissionRate * 100).toFixed(0)}%)
+            dont {formatFCFA(commission)} de frais plateforme ({(rate * 100).toFixed(0)}%)
           </p>
         </div>
       </div>

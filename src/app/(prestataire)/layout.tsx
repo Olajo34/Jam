@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { href: "/prestataire/dashboard", label: "Tableau de bord", icon: "📊" },
   { href: "/prestataire/services", label: "Mes services", icon: "✂️" },
   { href: "/prestataire/agenda", label: "Agenda", icon: "📅" },
+  { href: "/prestataire/profil", label: "Mon profil", icon: "🏪" },
   { href: "/prestataire/abonnement", label: "Abonnement", icon: "⭐" },
 ];
 

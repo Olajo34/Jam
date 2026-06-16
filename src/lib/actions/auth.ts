@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 
 const registerSchema = z.object({
   name: z.string().min(2),
@@ -16,7 +17,10 @@ const registerSchema = z.object({
   niu: z.string().min(3).optional().or(z.literal("")),
 });
 
-export async function registerUser(formData: FormData) {
+export async function registerUser(
+  _prev: { error: string } | null,
+  formData: FormData,
+): Promise<{ error: string } | null> {
   const parsed = registerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -26,28 +30,37 @@ export async function registerUser(formData: FormData) {
     niu: formData.get("niu") ?? "",
   });
 
-  if (!parsed.success) throw new Error("Données invalides. Vérifiez les champs.");
+  if (!parsed.success) return { error: "Données invalides. Vérifiez les champs." };
 
   const existing = await prisma.user.findUnique({ where: { email: parsed.data.email } });
-  if (existing) throw new Error("Un compte existe déjà avec cet email.");
+  if (existing) return { error: "Un compte existe déjà avec cet email." };
 
   if (parsed.data.role === "PRESTATAIRE" && !parsed.data.niu) {
-    throw new Error("Le NIU est obligatoire pour les prestataires.");
+    return { error: "Le NIU est obligatoire pour les prestataires." };
   }
 
   const passwordHash = await bcrypt.hash(parsed.data.password, 12);
 
-  const user = await prisma.user.create({
-    data: {
-      name: parsed.data.name,
-      email: parsed.data.email,
-      phone: parsed.data.phone || null,
-      passwordHash,
-      role: parsed.data.role,
-    },
-  });
+  let user: { id: string };
+  try {
+    user = await prisma.user.create({
+      data: {
+        name: parsed.data.name,
+        email: parsed.data.email,
+        phone: parsed.data.phone || null,
+        passwordHash,
+        role: parsed.data.role,
+      },
+    });
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      const fields = (err.meta?.target as string[]) ?? [];
+      if (fields.includes("phone")) return { error: "Ce numéro de téléphone est déjà associé à un compte." };
+      return { error: "Un compte existe déjà avec ces informations." };
+    }
+    return { error: "Une erreur est survenue. Veuillez réessayer." };
+  }
 
-  // Pré-créer le profil prestataire avec le NIU dès l'inscription
   if (parsed.data.role === "PRESTATAIRE" && parsed.data.niu) {
     const slug = `${parsed.data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}-${user.id.slice(-4)}`;
     await prisma.prestataire.create({
@@ -66,6 +79,7 @@ export async function registerUser(formData: FormData) {
     password: parsed.data.password,
     redirectTo: parsed.data.role === "PRESTATAIRE" ? "/prestataire/onboarding" : "/",
   });
+  return null;
 }
 
 const updateProfileSchema = z.object({

@@ -14,7 +14,7 @@ export async function initializePayment(params: {
   const res = await fetch(`${API}/payments`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.NOTCHPAY_PUBLIC_KEY}`,
+      Authorization: process.env.NOTCHPAY_PUBLIC_KEY!,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ ...params, currency: "XAF" }),
@@ -27,7 +27,7 @@ export async function initializePayment(params: {
 
 export async function verifyPayment(reference: string) {
   const res = await fetch(`${API}/payments/${reference}`, {
-    headers: { Authorization: `Bearer ${process.env.NOTCHPAY_SECRET_KEY}` },
+    headers: { Authorization: process.env.NOTCHPAY_SECRET_KEY! },
     cache: "no-store",
   });
   if (!res.ok) throw new Error("Paiement introuvable");

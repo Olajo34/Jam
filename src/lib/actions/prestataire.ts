@@ -190,6 +190,83 @@ export async function deleteService(serviceId: string) {
   revalidatePath("/prestataire/services");
 }
 
+// ─── Profile update (depuis /prestataire/profil) ──────────────────────────────
+
+type ProfileResult = { error?: string; success?: boolean };
+
+export async function updatePrestataireProfile(
+  _prev: ProfileResult | null,
+  formData: FormData,
+): Promise<ProfileResult> {
+  const session = await auth();
+  if (!session) return { error: "Non autorisé" };
+
+  const prestataire = await prisma.prestataire.findUnique({ where: { userId: session.user.id } });
+  if (!prestataire) return { error: "Profil introuvable" };
+
+  const businessName = (formData.get("businessName") as string)?.trim();
+  if (!businessName || businessName.length < 2) return { error: "Le nom d'établissement est requis." };
+
+  const description = (formData.get("description") as string)?.trim() || null;
+  const phone = (formData.get("phone") as string)?.trim() || null;
+  const address = (formData.get("address") as string)?.trim() || null;
+  const city = (formData.get("city") as string)?.trim() || null;
+  const latRaw = formData.get("latitude") as string;
+  const lngRaw = formData.get("longitude") as string;
+  const latitude = latRaw ? parseFloat(latRaw) : null;
+  const longitude = lngRaw ? parseFloat(lngRaw) : null;
+
+  await prisma.prestataire.update({
+    where: { id: prestataire.id },
+    data: {
+      businessName,
+      description,
+      phone,
+      address,
+      city,
+      latitude: latitude && !isNaN(latitude) ? latitude : null,
+      longitude: longitude && !isNaN(longitude) ? longitude : null,
+    },
+  });
+
+  revalidatePath("/prestataire/profil");
+  revalidatePath(`/prestataires/${prestataire.slug}`);
+  return { success: true };
+}
+
+// ─── Availabilities ───────────────────────────────────────────────────────────
+
+export type AvailabilityInput = {
+  dayOfWeek: number;
+  isActive: boolean;
+  startTime: string;
+  endTime: string;
+};
+
+export async function saveAvailabilities(
+  availabilities: AvailabilityInput[],
+): Promise<ProfileResult> {
+  const session = await auth();
+  if (!session) return { error: "Non autorisé" };
+
+  const prestataire = await prisma.prestataire.findUnique({ where: { userId: session.user.id } });
+  if (!prestataire) return { error: "Profil introuvable" };
+
+  await Promise.all(
+    availabilities.map(({ dayOfWeek, isActive, startTime, endTime }) =>
+      prisma.availability.upsert({
+        where: { prestataireId_dayOfWeek: { prestataireId: prestataire.id, dayOfWeek } },
+        create: { prestataireId: prestataire.id, dayOfWeek, isActive, startTime, endTime },
+        update: { isActive, startTime, endTime },
+      }),
+    ),
+  );
+
+  revalidatePath("/prestataire/profil");
+  revalidatePath(`/prestataires/${prestataire.slug}`);
+  return { success: true };
+}
+
 // ─── Booking management ───────────────────────────────────────────────────────
 
 export async function updateBookingStatus(bookingId: string, status: "CONFIRMED" | "CANCELLED" | "COMPLETED" | "NO_SHOW") {

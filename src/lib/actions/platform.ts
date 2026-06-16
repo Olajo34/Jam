@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 
 const configSchema = z.object({
   commissionRate: z.coerce.number().min(0).max(0.5),
+  proCommissionRate: z.coerce.number().min(0).max(0.5),
+  goldCommissionRate: z.coerce.number().min(0).max(0.5),
   proPlanPrice: z.coerce.number().min(0),
   goldPlanPrice: z.coerce.number().min(0),
   proBookingCap: z.coerce.number().min(1),
@@ -19,6 +21,8 @@ export async function savePlatformConfig(formData: FormData) {
 
   const parsed = configSchema.safeParse({
     commissionRate: formData.get("commissionRate"),
+    proCommissionRate: formData.get("proCommissionRate"),
+    goldCommissionRate: formData.get("goldCommissionRate"),
     proPlanPrice: formData.get("proPlanPrice"),
     goldPlanPrice: formData.get("goldPlanPrice"),
     proBookingCap: formData.get("proBookingCap"),

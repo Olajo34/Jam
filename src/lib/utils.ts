@@ -14,6 +14,21 @@ export function calculateCommission(amount: number, rate: number) {
   return { commission, prestataireNet: amount - commission };
 }
 
+type CommissionConfig = {
+  commissionRate: number;
+  proCommissionRate?: number;
+  goldCommissionRate?: number;
+};
+
+export function getCommissionRate(
+  plan: string | null | undefined,
+  config: CommissionConfig,
+): number {
+  if (plan === "GOLD") return config.goldCommissionRate ?? 0.03;
+  if (plan === "PRO") return config.proCommissionRate ?? 0.05;
+  return config.commissionRate ?? 0.07;
+}
+
 export function getMonthKey(date: Date = new Date()): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }

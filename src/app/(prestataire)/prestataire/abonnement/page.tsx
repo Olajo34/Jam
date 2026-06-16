@@ -2,8 +2,14 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { formatFCFA } from "@/lib/utils";
+import UpgradeButton from "./UpgradeButton";
 
-export default async function AbonnementPage() {
+export default async function AbonnementPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ processing?: string }>;
+}) {
+  const { processing } = await searchParams;
   const session = await auth();
   if (!session) redirect("/connexion");
 
@@ -55,6 +61,19 @@ export default async function AbonnementPage() {
         <h1 className="text-2xl font-display font-semibold text-[var(--color-foreground)]">Abonnement</h1>
         <p className="text-sm text-[var(--color-muted-foreground)] mt-0.5">Gérez votre plan et suivez votre activité mensuelle.</p>
       </div>
+
+      {processing && (
+        <div className="rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 flex items-start gap-3">
+          <span className="text-xl">⏳</span>
+          <div>
+            <p className="font-medium text-amber-800 text-sm">Paiement en cours de traitement</p>
+            <p className="text-xs text-amber-700 mt-0.5">
+              Votre paiement a bien été reçu. La mise à niveau de votre plan sera effective dans quelques instants.
+              Rechargez la page pour voir votre nouveau plan.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Current plan */}
       <div className={`rounded-2xl p-6 border ${plan === "GOLD" ? "bg-amber-50 border-amber-300" : plan === "PRO" ? "bg-purple-50 border-purple-200" : "bg-white border-[var(--color-border)]"}`}>
@@ -139,22 +158,18 @@ export default async function AbonnementPage() {
                   </ul>
                 </div>
                 {!isCurrent && p.price > 0 && (
-                  <button
-                    className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-medium text-white transition-opacity hover:opacity-90 ${
-                      p.key === "GOLD" ? "bg-amber-500" : "bg-[var(--color-primary)]"
-                    }`}
-                    disabled
-                    title="Paiement mobile money à venir"
-                  >
-                    Passer à {p.label}
-                  </button>
+                  <UpgradeButton
+                    plan={p.key as "PRO" | "GOLD"}
+                    label={p.label}
+                    gold={p.key === "GOLD"}
+                  />
                 )}
               </div>
             );
           })}
         </div>
         <p className="text-xs text-[var(--color-muted-foreground)] mt-3">
-          💳 Paiement via mobile money (MTN, Orange, Wave) — disponible prochainement.
+          💳 Paiement sécurisé via mobile money (MTN, Orange, Wave) par NotchPay.
         </p>
       </div>
 

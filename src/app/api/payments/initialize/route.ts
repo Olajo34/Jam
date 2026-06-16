@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { initializePayment } from "@/lib/notchpay";
-import { calculateCommission } from "@/lib/utils";
+import { calculateCommission, getCommissionRate } from "@/lib/utils";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     where: { id: bookingId, userId: session.user.id },
     include: {
       service: true,
-      prestataire: { select: { businessName: true } },
+      prestataire: { select: { businessName: true, subscription: { select: { plan: true } } } },
       user: { select: { email: true, phone: true } },
     },
   });
@@ -24,9 +24,11 @@ export async function POST(req: NextRequest) {
   }
 
   const config = await prisma.platformConfig.findUnique({ where: { id: "singleton" } })
-    ?? { commissionRate: 0.05 };
+    ?? { commissionRate: 0.07, proCommissionRate: 0.05, goldCommissionRate: 0.03 };
 
-  const { commission, prestataireNet } = calculateCommission(booking.service.price, config.commissionRate);
+  const plan = booking.prestataire.subscription?.plan ?? null;
+  const rate = getCommissionRate(plan, config);
+  const { commission, prestataireNet } = calculateCommission(booking.service.price, rate);
   const reference = `JAM-${bookingId.slice(-8)}-${Date.now()}`;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://jamfeeling.com";
 
@@ -37,7 +39,7 @@ export async function POST(req: NextRequest) {
       amount: booking.service.price,
       commission,
       prestataireNet,
-      commissionRate: config.commissionRate,
+      commissionRate: rate,
       provider: "MTN",
       status: "PENDING",
       externalRef: reference,
@@ -45,15 +47,21 @@ export async function POST(req: NextRequest) {
     update: { externalRef: reference, status: "PENDING" },
   });
 
-  const result = await initializePayment({
-    reference,
-    amount: booking.service.price,
-    email: booking.user.email,
-    phone: phone || booking.user.phone || undefined,
-    description: `${booking.service.name} chez ${booking.prestataire.businessName}`,
-    callback: `${appUrl}/api/payments/notify`,
-    redirect: `${appUrl}/reservations?paid=${bookingId}`,
-  });
-
-  return NextResponse.json({ url: result.authorization_url });
+  try {
+    const result = await initializePayment({
+      reference,
+      amount: booking.service.price,
+      email: booking.user.email,
+      phone: phone || booking.user.phone || undefined,
+      description: `${booking.service.name} chez ${booking.prestataire.businessName}`,
+      callback: `${appUrl}/api/payments/notify`,
+      redirect: `${appUrl}/reservations?paid=${bookingId}`,
+    });
+    return NextResponse.json({ url: result.authorization_url });
+  } catch (err) {
+    const cause = (err as { cause?: { code?: string } })?.cause;
+    console.error("[payments/initialize] NotchPay error:", err, "cause:", cause);
+    const message = err instanceof Error ? err.message : "Erreur NotchPay";
+    return NextResponse.json({ error: message }, { status: 502 });
+  }
 }

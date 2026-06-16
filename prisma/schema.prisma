@@ -370,11 +370,13 @@ model TicketMessage {
 // ─── Platform Config ──────────────────────────────────────────────────────────
 
 model PlatformConfig {
-  id             String   @id @default("singleton")
-  commissionRate Float    @default(0.05)
-  proPlanPrice   Int      @default(5000)
-  goldPlanPrice  Int      @default(15000)
-  proBookingCap  Int      @default(100)
-  freeBookingCap Int      @default(10)
-  updatedAt      DateTime @updatedAt
+  id                 String   @id @default("singleton")
+  commissionRate     Float    @default(0.07) // FREE plan
+  proCommissionRate  Float    @default(0.05) // PRO plan
+  goldCommissionRate Float    @default(0.03) // GOLD plan
+  proPlanPrice       Int      @default(5000)
+  goldPlanPrice      Int      @default(15000)
+  proBookingCap      Int      @default(100)
+  freeBookingCap     Int      @default(10)
+  updatedAt          DateTime @updatedAt
 }

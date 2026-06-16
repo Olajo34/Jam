@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { registerUser } from "@/lib/actions/auth";
 import Link from "next/link";
 
 export default function InscriptionPage() {
   const [role, setRole] = useState<"USER" | "PRESTATAIRE">("USER");
+  const [state, action, pending] = useActionState(registerUser, null);
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-[var(--color-border)] p-8">
@@ -53,13 +54,13 @@ export default function InscriptionPage() {
         </button>
       </div>
 
-      <form action={registerUser} className="flex flex-col gap-4">
+      <form action={action} className="flex flex-col gap-4">
         <input type="hidden" name="role" value={role} />
 
         <Field id="name" label="Nom complet" type="text" placeholder="Votre nom" required autoComplete="name" />
         <Field id="email" label="Email" type="email" placeholder="vous@exemple.com" required autoComplete="email" />
         <Field id="phone" label="Téléphone" type="tel" placeholder="+225 07 00 00 00 00" autoComplete="tel"
-          labelSuffix="(optionnel)" />
+          labelSuffix="optionnel" />
 
         {/* NIU — prestataires uniquement */}
         {role === "PRESTATAIRE" && (
@@ -80,11 +81,22 @@ export default function InscriptionPage() {
 
         <Field id="password" label="Mot de passe" type="password" placeholder="Minimum 6 caractères" required autoComplete="new-password" />
 
+        {state?.error && (
+          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+            {state.error}
+          </p>
+        )}
+
         <button
           type="submit"
-          className="w-full py-3 rounded-full font-medium text-white jam-gradient hover:opacity-90 transition-opacity mt-2"
+          disabled={pending}
+          className="w-full py-3 rounded-full font-medium text-white jam-gradient hover:opacity-90 transition-opacity mt-2 disabled:opacity-60"
         >
-          {role === "PRESTATAIRE" ? "Créer mon compte prestataire" : "Créer mon compte"}
+          {pending
+            ? "Création en cours…"
+            : role === "PRESTATAIRE"
+            ? "Créer mon compte prestataire"
+            : "Créer mon compte"}
         </button>
 
         {role === "PRESTATAIRE" && (
