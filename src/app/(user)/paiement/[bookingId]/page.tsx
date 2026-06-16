@@ -1,15 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
-import { simulatePaymentSuccess } from "@/lib/actions/payment";
 import { formatFCFA } from "@/lib/utils";
-
-const PROVIDERS = [
-  { id: "MTN",    label: "MTN Mobile Money",  color: "bg-yellow-400",  logo: "🟡", countries: "CI · GH · CM" },
-  { id: "ORANGE", label: "Orange Money",       color: "bg-orange-500",  logo: "🟠", countries: "CI · SN · ML" },
-  { id: "WAVE",   label: "Wave",               color: "bg-blue-500",    logo: "🔵", countries: "CI · SN" },
-  { id: "MOOV",   label: "Moov Money",         color: "bg-blue-700",    logo: "💙", countries: "CI · BF · BJ" },
-];
+import Link from "next/link";
+import PaymentForm from "./PaymentForm";
 
 export default async function PaiementPage({ params }: { params: Promise<{ bookingId: string }> }) {
   const { bookingId } = await params;
@@ -22,6 +16,7 @@ export default async function PaiementPage({ params }: { params: Promise<{ booki
       service: true,
       prestataire: { select: { businessName: true, slug: true } },
       payment: true,
+      user: { select: { phone: true } },
     },
   });
 
@@ -34,38 +29,55 @@ export default async function PaiementPage({ params }: { params: Promise<{ booki
   const commission = Math.round(booking.service.price * config.commissionRate);
 
   return (
-    <div className="max-w-md mx-auto pb-8">
+    <div className="max-w-md mx-auto pb-12">
+      {/* En-tête */}
       <div className="text-center mb-8">
-        <div className="w-16 h-16 jam-gradient rounded-2xl flex items-center justify-center text-white text-2xl mx-auto mb-4">
-          💳
+        <div className="w-16 h-16 jam-gradient rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+          <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+          </svg>
         </div>
-        <h1 className="text-2xl font-display font-semibold text-[var(--color-foreground)]">Paiement</h1>
-        <p className="text-sm text-[var(--color-muted-foreground)] mt-1">Choisissez votre opérateur mobile money</p>
+        <h1 className="text-2xl font-display font-semibold text-[var(--color-foreground)]">Paiement sécurisé</h1>
+        <p className="text-sm text-[var(--color-muted-foreground)] mt-1">
+          Vous allez être redirigé vers NotchPay pour finaliser
+        </p>
       </div>
 
-      {/* Order summary */}
-      <div className="bg-white rounded-2xl border border-[var(--color-border)] p-5 mb-6">
-        <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-muted-foreground)] mb-3">Récapitulatif</p>
-        <div className="space-y-2 text-sm">
+      {/* Récapitulatif */}
+      <div className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] p-5 mb-6 shadow-sm">
+        <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-muted-foreground)] mb-4">
+          Récapitulatif
+        </p>
+        <div className="space-y-2.5 text-sm">
           <div className="flex justify-between">
             <span className="text-[var(--color-muted-foreground)]">Prestation</span>
-            <span className="font-medium">{booking.service.name}</span>
+            <span className="font-medium text-[var(--color-foreground)]">{booking.service.name}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-[var(--color-muted-foreground)]">Chez</span>
-            <span className="font-medium">{booking.prestataire.businessName}</span>
+            <span className="font-medium text-[var(--color-foreground)]">{booking.prestataire.businessName}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-[var(--color-muted-foreground)]">Date</span>
-            <span className="font-medium">
+            <span className="font-medium text-[var(--color-foreground)]">
               {new Date(booking.scheduledAt).toLocaleDateString("fr-FR", {
                 weekday: "short", day: "numeric", month: "long",
-              })} à {new Date(booking.scheduledAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+              })}{" "}
+              à{" "}
+              {new Date(booking.scheduledAt).toLocaleTimeString("fr-FR", {
+                hour: "2-digit", minute: "2-digit",
+              })}
             </span>
           </div>
-          <div className="border-t border-[var(--color-border)] pt-2 mt-2 flex justify-between font-bold">
-            <span>Total à payer</span>
-            <span className="text-lg text-[var(--color-foreground)]">{formatFCFA(booking.service.price)}</span>
+          <div className="flex justify-between">
+            <span className="text-[var(--color-muted-foreground)]">Durée</span>
+            <span className="font-medium text-[var(--color-foreground)]">{booking.service.duration} min</span>
+          </div>
+          <div className="border-t border-[var(--color-border)] pt-3 mt-1 flex justify-between items-baseline">
+            <span className="font-semibold text-[var(--color-foreground)]">Total</span>
+            <span className="text-xl font-display font-semibold text-[var(--color-foreground)]">
+              {formatFCFA(booking.service.price)}
+            </span>
           </div>
           <p className="text-xs text-[var(--color-muted-foreground)] text-right">
             dont {formatFCFA(commission)} de frais plateforme ({(config.commissionRate * 100).toFixed(0)}%)
@@ -73,39 +85,21 @@ export default async function PaiementPage({ params }: { params: Promise<{ booki
         </div>
       </div>
 
-      {/* Provider selection */}
-      <div className="space-y-3 mb-6">
-        {PROVIDERS.map((provider) => (
-          <form key={provider.id} action={simulatePaymentSuccess.bind(null, bookingId)}>
-            <input type="hidden" name="provider" value={provider.id} />
-            <button
-              type="submit"
-              className="w-full flex items-center gap-4 p-4 rounded-2xl border border-[var(--color-border)] bg-white hover:border-[var(--color-primary)]/40 hover:shadow-sm transition-all text-left"
-            >
-              <span className="text-2xl">{provider.logo}</span>
-              <div className="flex-1">
-                <p className="font-semibold text-sm text-[var(--color-foreground)]">{provider.label}</p>
-                <p className="text-xs text-[var(--color-muted-foreground)]">{provider.countries}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-bold text-[var(--color-foreground)]">{formatFCFA(booking.service.price)}</p>
-                <p className="text-xs text-[var(--color-primary)] font-medium mt-0.5">Payer →</p>
-              </div>
-            </button>
-          </form>
-        ))}
+      {/* Formulaire de paiement (client component) */}
+      <PaymentForm
+        bookingId={bookingId}
+        defaultPhone={booking.user.phone ?? ""}
+        amount={booking.service.price}
+      />
+
+      <div className="mt-4 text-center">
+        <Link
+          href={`/prestataires/${booking.prestataire.slug}`}
+          className="text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors"
+        >
+          ← Annuler et retourner au profil
+        </Link>
       </div>
-
-      <p className="text-xs text-center text-[var(--color-muted-foreground)]">
-        🔒 Paiement sécurisé · Vous recevrez une confirmation par SMS
-      </p>
-
-      {/* DEV notice */}
-      {process.env.NODE_ENV === "development" && (
-        <div className="mt-6 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-700">
-          <strong>Mode développement</strong> — Le clic sur un opérateur simule un paiement réussi sans appel réel à CinetPay.
-        </div>
-      )}
     </div>
   );
 }
