@@ -89,6 +89,11 @@ export default async function HomePage() {
   if (session?.user.role === "MODERATEUR") redirect("/moderateur/dashboard");
   if (session?.user.role === "PRESTATAIRE") redirect("/prestataire/dashboard");
 
+  const { prisma } = await import("@/lib/prisma");
+  const userImage = session
+    ? (await prisma.user.findUnique({ where: { id: session.user.id }, select: { image: true } }))?.image
+    : null;
+
   return (
     <main className="flex flex-col min-h-screen overflow-hidden">
 
@@ -106,8 +111,15 @@ export default async function HomePage() {
                   Réservations
                 </Link>
                 <Link href="/profil"
-                  className="w-9 h-9 rounded-full jam-gradient flex items-center justify-center text-white text-sm font-semibold shadow-md">
-                  {session.user.name?.[0]?.toUpperCase() ?? "U"}
+                  className="w-9 h-9 rounded-full overflow-hidden shrink-0 ring-2 ring-white/30 hover:ring-white/60 transition-all shadow-md">
+                  {userImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={userImage} alt="" className="w-full h-full object-cover object-center" />
+                  ) : (
+                    <div className="w-full h-full jam-gradient flex items-center justify-center text-white text-sm font-semibold">
+                      {session.user.name?.[0]?.toUpperCase() ?? "U"}
+                    </div>
+                  )}
                 </Link>
               </>
             ) : (
