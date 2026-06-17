@@ -117,7 +117,7 @@ export default async function ReserverPage({
   const availableCount = slots.reduce((acc, s) => acc + s.times.filter((t) => t.available).length, 0);
 
   return (
-    <div className="max-w-xl mx-auto pb-24 sm:pb-6">
+    <div className="max-w-xl mx-auto pb-28 sm:pb-6">
       <div className="flex items-center gap-3 mb-6">
         <Link href={`/prestataires/${slug}`} className="text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]">
           ← {prestataire.businessName}

@@ -61,7 +61,7 @@ export default async function PrestatairePage({
   const isGold = prestataire.subscription?.plan === "GOLD";
 
   return (
-    <div className="pb-24 sm:pb-6 max-w-3xl mx-auto">
+    <div className="pb-44 sm:pb-6 max-w-3xl mx-auto">
       {/* Cover */}
       <div className="h-64 sm:h-80 rounded-2xl overflow-hidden relative mb-0 flex items-center justify-center">
         {prestataire.coverImage ? (
@@ -224,8 +224,8 @@ export default async function PrestatairePage({
         </section>
       )}
 
-      {/* CTA fixe mobile */}
-      <div className="sm:hidden fixed bottom-0 inset-x-0 p-4 bg-white border-t border-[var(--color-border)]">
+      {/* CTA fixe mobile — positionné au-dessus de la nav (z-50) */}
+      <div className="sm:hidden fixed bottom-14 inset-x-0 px-4 pb-3 pt-2 bg-white border-t border-[var(--color-border)] z-[60] shadow-lg">
         {prestataire.services[0] ? (
           <Link
             href={
