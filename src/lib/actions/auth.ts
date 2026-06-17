@@ -40,8 +40,8 @@ export async function registerUser(
   const existing = await prisma.user.findUnique({ where: { email: parsed.data.email } });
   if (existing) return { error: "Un compte existe déjà avec cet email." };
 
-  if (parsed.data.role === "PRESTATAIRE" && !parsed.data.niu) {
-    return { error: "Le NIU est obligatoire pour les prestataires." };
+  if (parsed.data.role === "PRESTATAIRE" && (!parsed.data.niu || parsed.data.niu.trim().length < 3)) {
+    return { error: "Le NIU est obligatoire pour les prestataires (minimum 3 caractères)." };
   }
 
   const passwordHash = await bcrypt.hash(parsed.data.password, 12);
@@ -73,7 +73,7 @@ export async function registerUser(
         userId: user.id,
         businessName: parsed.data.name,
         slug,
-        niu: parsed.data.niu,
+        niu: parsed.data.niu!.trim(),
         enrollmentStatus: "APPROVED",
       },
     });

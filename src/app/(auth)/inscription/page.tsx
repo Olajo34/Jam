@@ -66,15 +66,17 @@ export default function InscriptionPage() {
         {role === "PRESTATAIRE" && (
           <div className="flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
             <label htmlFor="niu" className="text-sm font-medium text-[var(--color-foreground)]">
-              NIU <span className="text-[var(--color-muted-foreground)] font-normal">(Numéro d'Identification Unique)</span>
+              NIU <span className="text-red-500">*</span>{" "}
+              <span className="text-[var(--color-muted-foreground)] font-normal">(Numéro d'Identification Unique)</span>
             </label>
             <input
-              id="niu" name="niu" type="text" required={role === "PRESTATAIRE"}
+              id="niu" name="niu" type="text" required
+              minLength={3}
               placeholder="Ex: CI-2024-B-12345"
               className="w-full px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-cream)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
             />
             <p className="text-xs text-[var(--color-muted-foreground)]">
-              Votre NIU apparaîtra sur votre profil professionnel et sera vérifié.
+              Obligatoire · votre NIU sera vérifié avant activation de votre profil.
             </p>
           </div>
         )}
