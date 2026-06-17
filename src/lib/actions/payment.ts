@@ -43,7 +43,8 @@ export async function initiateMobileMoneyPayment(bookingId: string, provider: st
 }
 
 export async function simulatePaymentSuccess(bookingId: string, formData: FormData) {
-  // DEV ONLY — simulates a successful payment without real mobile money
+  if (process.env.NODE_ENV !== "development") throw new Error("Non autorisé");
+
   const session = await auth();
   if (!session) redirect("/connexion");
 

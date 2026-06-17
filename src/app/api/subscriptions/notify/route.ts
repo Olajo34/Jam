@@ -48,10 +48,15 @@ export async function POST(req: NextRequest) {
     ? rawChannel
     : "MTN") as "MTN" | "ORANGE" | "WAVE" | "MOOV";
 
-  // Identify prestataire from reference (SUB-{id.slice(-8)}-{timestamp})
-  const partialId = reference.split("-")[1];
-  const prestataire = await prisma.prestataire.findFirst({
-    where: { id: { endsWith: partialId } },
+  // Idempotency: ignore already-processed references
+  const alreadyProcessed = await prisma.subscriptionPayment.findFirst({ where: { externalRef: reference } });
+  if (alreadyProcessed) return NextResponse.json({ received: true });
+
+  // Identify prestataire from reference (SUB-{prestataireId}-{timestamp})
+  // cuid IDs contain no hyphens, so split("-")[1] is always the full ID
+  const prestataireId = reference.split("-")[1];
+  const prestataire = await prisma.prestataire.findUnique({
+    where: { id: prestataireId },
     include: { subscription: true },
   });
   if (!prestataire) return NextResponse.json({ received: true });
@@ -77,21 +82,10 @@ export async function POST(req: NextRequest) {
     ]);
   } else {
     const sub = await prisma.subscription.create({
-      data: {
-        prestataireId: prestataire.id,
-        plan,
-        status: "ACTIVE",
-        endDate,
-      },
+      data: { prestataireId: prestataire.id, plan, status: "ACTIVE", endDate },
     });
     await prisma.subscriptionPayment.create({
-      data: {
-        subscriptionId: sub.id,
-        amount,
-        plan,
-        provider,
-        externalRef: reference,
-      },
+      data: { subscriptionId: sub.id, amount, plan, provider, externalRef: reference },
     });
   }
 

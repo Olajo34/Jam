@@ -10,6 +10,12 @@ export async function POST(req: NextRequest) {
 
   const { bookingId, phone } = await req.json();
 
+  if (phone !== undefined && phone !== null) {
+    if (typeof phone !== "string" || !/^\+?[0-9]{8,15}$/.test(phone.trim())) {
+      return NextResponse.json({ error: "Numéro de téléphone invalide" }, { status: 400 });
+    }
+  }
+
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId, userId: session.user.id },
     include: {

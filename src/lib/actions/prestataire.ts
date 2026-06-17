@@ -123,7 +123,13 @@ export async function createService(formData: FormData) {
   const photos = parsePhotos(formData);
   if (photos.length < 1) throw new Error("Au moins 1 photo est requise.");
 
-  const videoUrl = (formData.get("videoUrl") as string)?.trim() || null;
+  const videoUrlRaw = (formData.get("videoUrl") as string)?.trim() || null;
+  const videoUrl = videoUrlRaw
+    ? (() => {
+        try { new URL(videoUrlRaw); return videoUrlRaw; }
+        catch { return null; }
+      })()
+    : null;
 
   await prisma.service.create({
     data: {
@@ -167,7 +173,13 @@ export async function updateService(serviceId: string, formData: FormData) {
   const photos = parsePhotos(formData);
   if (photos.length < 1) throw new Error("Au moins 1 photo est requise.");
 
-  const videoUrl = (formData.get("videoUrl") as string)?.trim() || null;
+  const videoUrlRaw2 = (formData.get("videoUrl") as string)?.trim() || null;
+  const videoUrl = videoUrlRaw2
+    ? (() => {
+        try { new URL(videoUrlRaw2); return videoUrlRaw2; }
+        catch { return null; }
+      })()
+    : null;
 
   await prisma.service.update({
     where: { id: serviceId },
@@ -210,7 +222,7 @@ export async function updatePrestataireProfile(
   formData: FormData,
 ): Promise<ProfileResult> {
   const session = await auth();
-  if (!session) return { error: "Non autorisé" };
+  if (!session || session.user.role !== "PRESTATAIRE") return { error: "Non autorisé" };
 
   const prestataire = await prisma.prestataire.findUnique({ where: { userId: session.user.id } });
   if (!prestataire) return { error: "Profil introuvable" };
@@ -258,7 +270,7 @@ export async function saveAvailabilities(
   availabilities: AvailabilityInput[],
 ): Promise<ProfileResult> {
   const session = await auth();
-  if (!session) return { error: "Non autorisé" };
+  if (!session || session.user.role !== "PRESTATAIRE") return { error: "Non autorisé" };
 
   const prestataire = await prisma.prestataire.findUnique({ where: { userId: session.user.id } });
   if (!prestataire) return { error: "Profil introuvable" };

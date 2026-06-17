@@ -9,7 +9,14 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return Response.json({ error: "Non autorisé" }, { status: 401 });
 
-  const { message, history = [] } = await req.json();
+  const body = await req.json();
+  const { message, history = [] } = body;
+  if (typeof message !== "string" || message.length > 2000) {
+    return Response.json({ error: "Message invalide ou trop long (max 2000 caractères)" }, { status: 400 });
+  }
+  if (!Array.isArray(history) || history.length > 20) {
+    return Response.json({ error: "Historique de conversation invalide" }, { status: 400 });
+  }
 
   // Injection de contexte depuis la DB
   const user = await prisma.user.findUnique({

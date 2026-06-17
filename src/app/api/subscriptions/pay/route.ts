@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     ?? { proPlanPrice: 5000, goldPlanPrice: 15000 };
 
   const amount = plan === "GOLD" ? config.goldPlanPrice : config.proPlanPrice;
-  const reference = `SUB-${prestataire.id.slice(-8)}-${Date.now()}`;
+  const reference = `SUB-${prestataire.id}-${Date.now()}`;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://jamfeeling.com";
 
   try {

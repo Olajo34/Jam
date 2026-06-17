@@ -7,8 +7,14 @@ export async function GET(req: NextRequest) {
 
   if (!lat || !lon) return NextResponse.json({ error: "lat et lon requis" }, { status: 400 });
 
+  const latNum = parseFloat(lat);
+  const lonNum = parseFloat(lon);
+  if (isNaN(latNum) || isNaN(lonNum) || latNum < -90 || latNum > 90 || lonNum < -180 || lonNum > 180) {
+    return NextResponse.json({ error: "Coordonnées invalides" }, { status: 400 });
+  }
+
   const res = await fetch(
-    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=fr`,
+    `https://nominatim.openstreetmap.org/reverse?lat=${latNum}&lon=${lonNum}&format=json&accept-language=fr`,
     {
       headers: {
         "User-Agent": "JamBeautyApp/1.0 (contact@jamfeeling.com)",

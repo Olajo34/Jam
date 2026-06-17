@@ -11,7 +11,7 @@ const bookingSchema = z.object({
   prestataireId: z.string(),
   serviceId: z.string(),
   scheduledAt: z.string().datetime(),
-  notes: z.string().optional(),
+  notes: z.string().max(1000).optional(),
 });
 
 export async function createBooking(formData: FormData) {
