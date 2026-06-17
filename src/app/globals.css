@@ -262,4 +262,32 @@
   .animate-reveal-line {
     animation: reveal-line .8s cubic-bezier(.16,1,.3,1) .4s both;
   }
+
+  /* Marquee — défilement horizontal continu */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(-50% - 10px)); }
+  }
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+    width: max-content;
+    display: flex;
+  }
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+
+  /* Shimmer — badge Gold métallique */
+  @keyframes shimmer-gold {
+    0%   { background-position: -300% center; }
+    100% { background-position: 300% center; }
+  }
+  .badge-gold-shimmer {
+    background: linear-gradient(90deg, #92680A 0%, #C4960E 30%, #FFD700 50%, #C4960E 70%, #92680A 100%);
+    background-size: 300% auto;
+    animation: shimmer-gold 3s linear infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }

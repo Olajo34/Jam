@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   icons: { icon: "/jam-symbol.svg" },
 };
 
+import { ScrollAnimations } from "@/components/shared/ScrollAnimations";
+
 export default function RootLayout({
   children,
 }: {
@@ -29,7 +31,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${geist.variable} ${cormorant.variable} h-full`}>
-      <body className="min-h-full flex flex-col antialiased">{children}</body>
+      <body className="min-h-full flex flex-col antialiased">
+        <ScrollAnimations />
+        {children}
+      </body>
     </html>
   );
 }

@@ -63,19 +63,26 @@ export default async function PrestatairePage({
   return (
     <div className="pb-24 sm:pb-6 max-w-3xl mx-auto">
       {/* Cover */}
-      <div className="h-52 sm:h-64 rounded-2xl bg-gradient-to-br from-[var(--color-cream)] to-[var(--color-muted)] overflow-hidden relative mb-6 flex items-center justify-center">
+      <div className="h-64 sm:h-80 rounded-2xl overflow-hidden relative mb-0 flex items-center justify-center">
         {prestataire.coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={prestataire.coverImage} alt={prestataire.businessName} className="w-full h-full object-cover" />
         ) : (
-          <span className="text-8xl opacity-20">💆</span>
+          <div className="w-full h-full jam-gradient flex items-center justify-center">
+            <span className="font-display font-medium text-8xl text-white/60 select-none tracking-tight">
+              {prestataire.businessName.slice(0, 2).toUpperCase()}
+            </span>
+          </div>
         )}
+        {/* Fade bas vers le fond de page */}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[var(--color-background)] to-transparent pointer-events-none" />
         {isGold && (
-          <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-sm font-bold bg-amber-400 text-white shadow">
-            ⭐ Gold
+          <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-sm font-bold bg-amber-400 text-amber-900 shadow badge-gold-shimmer">
+            ✦ Gold
           </span>
         )}
       </div>
+      <div className="mb-6" />
 
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-6">

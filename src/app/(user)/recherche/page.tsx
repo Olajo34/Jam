@@ -195,18 +195,22 @@ function PrestataireCard({ p, badge }: { p: CardPrestataire; badge?: "gold" | "p
       }`}
     >
       {/* Cover */}
-      <div className="h-36 bg-gradient-to-br from-[var(--color-cream)] to-[var(--color-muted)] relative flex items-center justify-center overflow-hidden">
+      <div className="h-36 relative flex items-center justify-center overflow-hidden">
         {p.coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={p.coverImage} alt={p.businessName} className="w-full h-full object-cover" />
         ) : (
-          <span className="text-5xl opacity-20">💆</span>
+          <div className="w-full h-full jam-gradient flex items-center justify-center">
+            <span className="font-display font-medium text-4xl text-white/70 select-none tracking-tight">
+              {p.businessName.slice(0, 2).toUpperCase()}
+            </span>
+          </div>
         )}
 
         {/* Badge plan */}
         {badge === "gold" && (
-          <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-400 text-white shadow-sm">
-            ⭐ Gold
+          <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-400 text-amber-900 shadow-sm badge-gold-shimmer">
+            ✦ Gold
           </span>
         )}
         {badge === "pro" && (

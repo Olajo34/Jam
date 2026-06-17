@@ -3,6 +3,7 @@ import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import CategoriesSection from "./CategoriesSection";
+import { MobileMenuButton } from "@/components/shared/MobileMenuButton";
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1527203561188-dae1bc1a417f?w=420&q=80",
@@ -101,7 +102,7 @@ export default async function HomePage() {
             </Link>
             {session ? (
               <>
-                <Link href="/reservations" className="text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors py-3 px-2 min-h-[44px] flex items-center">
+                <Link href="/reservations" className="hidden sm:flex text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors py-3 px-2 min-h-[44px] items-center">
                   Réservations
                 </Link>
                 <Link href="/profil"
@@ -111,15 +112,17 @@ export default async function HomePage() {
               </>
             ) : (
               <>
-                <Link href="/connexion" className="text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors py-3 px-2 min-h-[44px] flex items-center">
+                <Link href="/connexion" className="hidden sm:flex text-xs font-medium tracking-widest uppercase text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors py-3 px-2 min-h-[44px] items-center">
                   Connexion
                 </Link>
                 <Link href="/inscription"
-                  className="px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase text-white jam-gradient hover:opacity-90 transition-opacity shadow-md animate-pulse-ring">
+                  className="hidden sm:block px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider uppercase text-white jam-gradient hover:opacity-90 transition-opacity shadow-md animate-pulse-ring">
                   Commencer
                 </Link>
               </>
             )}
+            {/* Menu hamburger — mobile uniquement */}
+            <MobileMenuButton hasSession={!!session} />
           </nav>
         </div>
       </header>
@@ -164,6 +167,12 @@ export default async function HomePage() {
               </Link>
             </div>
 
+            {/* Image hero — mobile uniquement */}
+            <div className="lg:hidden mt-10 overflow-hidden rounded-3xl shadow-2xl">
+              <Image src={HERO_IMAGES[0]} alt="Prestation beauté" width={600} height={400}
+                className="w-full h-56 object-cover" />
+            </div>
+
             {/* Preuve sociale */}
             <div className="animate-fade-up animate-fade-up-delay-4 flex items-center gap-4 mt-12 pt-8 border-t border-[var(--color-border)]">
               <div className="flex -space-x-2.5">
@@ -177,6 +186,25 @@ export default async function HomePage() {
                 <p className="text-sm font-semibold text-[var(--color-foreground)]">+500 prestataires</p>
                 <p className="text-xs text-[var(--color-muted-foreground)]">actifs en zone CEMAC</p>
               </div>
+            </div>
+
+            {/* Logos Mobile Money */}
+            <div className="animate-fade-up animate-fade-up-delay-4 flex flex-wrap items-center gap-3 mt-6">
+              <span className="text-xs text-[var(--color-muted-foreground)]">Paiement via</span>
+              {[
+                { name: "MTN", bg: "#FFC107", color: "#000" },
+                { name: "Orange", bg: "#FF6600", color: "#fff" },
+                { name: "Wave", bg: "#1A9BF4", color: "#fff" },
+                { name: "Moov", bg: "#009B4E", color: "#fff" },
+              ].map((p) => (
+                <span
+                  key={p.name}
+                  className="px-2.5 py-1 rounded-md text-xs font-bold tracking-tight"
+                  style={{ background: p.bg, color: p.color }}
+                >
+                  {p.name}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -194,9 +222,13 @@ export default async function HomePage() {
       </section>
 
       {/* ── CATÉGORIES ──────────────────────────────────────── */}
-      <section className="bg-[var(--color-foreground)] py-24 px-6">
+      <section className="bg-[var(--color-foreground)] pt-0 pb-24 px-6">
+        {/* Wave transition depuis le hero */}
+        <svg viewBox="0 0 1440 70" preserveAspectRatio="none" className="w-full block -mb-1" style={{ fill: "#100608" }}>
+          <path d="M0,0 L0,35 C240,70 480,0 720,35 C960,70 1200,0 1440,35 L1440,0 Z" />
+        </svg>
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-end justify-between mb-12">
+          <div className="flex items-end justify-between mb-12" data-animate>
             <div>
               <p className="text-xs font-medium tracking-[0.2em] uppercase text-[var(--color-secondary)] mb-3">
                 Notre sélection
@@ -229,15 +261,20 @@ export default async function HomePage() {
 
           <div className="grid sm:grid-cols-3 gap-12">
             {[
-              { n: "01", title: "Trouvez", desc: "Recherchez par catégorie, ville ou activez la géolocalisation pour voir les prestataires près de vous.", img: "https://images.unsplash.com/photo-1615890643735-6cd26210d646?w=600&q=80" },
-              { n: "02", title: "Réservez", desc: "Choisissez votre prestation et votre créneau en quelques secondes, sans téléphone.", img: "https://images.unsplash.com/photo-1615891167714-6bb60917b7eb?w=600&q=80" },
-              { n: "03", title: "Payez", desc: "Réglez en toute sécurité via MTN Mobile Money, Orange Money, Wave ou Moov.", img: "https://images.unsplash.com/photo-1615891081220-9116de3e1afd?w=600&q=80" },
-            ].map((step) => (
-              <div key={step.n} className="flex flex-col">
-                <div className="rounded-xl overflow-hidden aspect-video shadow-md mb-6">
-                  <Image src={step.img} alt={step.title} width={500} height={300} className="w-full h-full object-cover" />
+              { n: "01", title: "Trouvez", desc: "Recherchez par catégorie, ville ou activez la géolocalisation pour voir les prestataires près de vous.", icon: "🔍" },
+              { n: "02", title: "Réservez", desc: "Choisissez votre prestation et votre créneau en quelques secondes, sans téléphone.", icon: "📅" },
+              { n: "03", title: "Payez", desc: "Réglez en toute sécurité via MTN Mobile Money, Orange Money, Wave ou Moov.", icon: "💳" },
+            ].map((step, i) => (
+              <div key={step.n} className="flex flex-col" data-animate data-delay={i}>
+                {/* Numéro + ligne dorée */}
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="font-display text-5xl font-light text-[var(--color-secondary)] leading-none">{step.n}</span>
+                  <div className="flex-1 h-px bg-gradient-to-r from-[var(--color-secondary)] to-transparent opacity-40" />
                 </div>
-                <span className="text-xs font-medium tracking-[0.2em] text-[var(--color-secondary)] mb-2">{step.n}</span>
+                {/* Icône dans un cercle */}
+                <div className="w-14 h-14 rounded-2xl bg-[var(--color-card)] border border-[var(--color-border)] flex items-center justify-center text-2xl mb-5 shadow-sm">
+                  {step.icon}
+                </div>
                 <h3 className="font-display font-light text-2xl text-[var(--color-foreground)] mb-3 tracking-tight">{step.title}</h3>
                 <p className="text-sm text-[var(--color-muted-foreground)] leading-[1.8]">{step.desc}</p>
               </div>
@@ -247,9 +284,9 @@ export default async function HomePage() {
       </section>
 
       {/* ── TÉMOIGNAGES ─────────────────────────────────────── */}
-      <section className="py-28 px-6 bg-[var(--color-card)]">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
+      <section className="py-28 bg-[var(--color-card)] overflow-hidden">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-16" data-animate>
             <p className="text-xs font-medium tracking-[0.2em] uppercase text-[var(--color-secondary)] mb-4">
               Témoignages
             </p>
@@ -257,11 +294,13 @@ export default async function HomePage() {
               Elles adorent Jam
             </h2>
           </div>
+        </div>
 
-          <div className="grid sm:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="bg-[var(--color-background)] rounded-2xl p-7 border border-[var(--color-border)]">
-                {/* Étoiles */}
+        {/* Marquee pleine largeur */}
+        <div className="overflow-hidden">
+          <div className="flex gap-5 animate-marquee">
+            {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
+              <div key={i} className="flex-shrink-0 w-80 bg-[var(--color-background)] rounded-2xl p-7 border border-[var(--color-border)]">
                 <div className="flex gap-0.5 mb-5" role="img" aria-label="5 étoiles sur 5">
                   {[1,2,3,4,5].map(s => (
                     <span key={s} className="text-[var(--color-secondary)] text-sm" aria-hidden="true">★</span>
@@ -310,8 +349,8 @@ export default async function HomePage() {
           </div>
 
           <div className="grid sm:grid-cols-3 gap-5">
-            {PLANS.map((plan) => (
-              <div key={plan.key}
+            {PLANS.map((plan, i) => (
+              <div key={plan.key} data-animate data-delay={i}
                 className={`rounded-2xl p-7 flex flex-col border transition-all ${
                   plan.featured
                     ? "jam-gradient text-white border-transparent shadow-xl shadow-[#4D1740]/30 scale-[1.03]"
