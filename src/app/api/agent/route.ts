@@ -5,9 +5,27 @@ import { NextRequest } from "next/server";
 
 const client = new Anthropic();
 
+// Rate limit : 20 requêtes par fenêtre de 10 minutes par utilisateur
+const RATE_LIMIT = 20;
+const WINDOW_MS = 10 * 60 * 1000;
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return Response.json({ error: "Non autorisé" }, { status: 401 });
+
+  // Rate limiting
+  const now = Date.now();
+  const userId = session.user.id;
+  const rl = rateLimitMap.get(userId);
+  if (rl && rl.resetAt > now) {
+    if (rl.count >= RATE_LIMIT) {
+      return Response.json({ error: "Trop de messages. Réessayez dans quelques minutes." }, { status: 429 });
+    }
+    rateLimitMap.set(userId, { count: rl.count + 1, resetAt: rl.resetAt });
+  } else {
+    rateLimitMap.set(userId, { count: 1, resetAt: now + WINDOW_MS });
+  }
 
   const body = await req.json();
   const { message, history = [] } = body;

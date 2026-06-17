@@ -51,14 +51,18 @@ export async function suspendPrestataire(prestataireId: string, reason: string) 
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") throw new Error("Non autorisé");
 
-  await prisma.prestataire.update({
+  const prestataire = await prisma.prestataire.update({
     where: { id: prestataireId },
     data: {
       suspendedAt: new Date(),
       suspendedReason: reason.trim(),
       enrollmentStatus: "REJECTED",
     },
+    select: { userId: true },
   });
+
+  // Supprimer les sessions DB actives (OAuth/magic-link) — force re-auth immédiat
+  await prisma.session.deleteMany({ where: { userId: prestataire.userId } });
 
   revalidatePath("/admin/prestataires");
 }

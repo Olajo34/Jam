@@ -118,6 +118,8 @@ model User {
   passwordHash  String?
   image         String?
   role          Role      @default(USER)
+  loginAttempts    Int       @default(0)
+  loginLockedUntil DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

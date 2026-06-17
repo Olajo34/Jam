@@ -7,12 +7,17 @@ import { z } from "zod";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
+import { randomBytes } from "crypto";
+import { sendVerificationEmail } from "@/lib/email";
+
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_MINUTES = 15;
 
 const registerSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   phone: z.string().min(8).optional().or(z.literal("")),
-  password: z.string().min(6),
+  password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères."),
   role: z.enum(["USER", "PRESTATAIRE"]).default("USER"),
   niu: z.string().min(3).optional().or(z.literal("")),
 });
@@ -74,12 +79,61 @@ export async function registerUser(
     });
   }
 
+  // Envoyer email de vérification
+  const verifToken = randomBytes(32).toString("hex");
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  await prisma.verificationToken.create({
+    data: { identifier: parsed.data.email, token: verifToken, expires },
+  });
+  await sendVerificationEmail(parsed.data.email, verifToken);
+
   await signIn("credentials", {
     email: parsed.data.email,
     password: parsed.data.password,
     redirectTo: parsed.data.role === "PRESTATAIRE" ? "/prestataire/onboarding" : "/",
   });
   return null;
+}
+
+export async function recordFailedLogin(email: string): Promise<{ locked: boolean; minutesLeft?: number }> {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { loginAttempts: true, loginLockedUntil: true },
+  });
+  if (!user) return { locked: false };
+
+  if (user.loginLockedUntil && user.loginLockedUntil > new Date()) {
+    const minutesLeft = Math.ceil((user.loginLockedUntil.getTime() - Date.now()) / 60000);
+    return { locked: true, minutesLeft };
+  }
+
+  const newAttempts = (user.loginAttempts ?? 0) + 1;
+  const shouldLock = newAttempts >= MAX_LOGIN_ATTEMPTS;
+  await prisma.user.update({
+    where: { email },
+    data: {
+      loginAttempts: newAttempts,
+      loginLockedUntil: shouldLock ? new Date(Date.now() + LOCKOUT_MINUTES * 60 * 1000) : null,
+    },
+  });
+  return { locked: shouldLock, minutesLeft: shouldLock ? LOCKOUT_MINUTES : undefined };
+}
+
+export async function checkLoginLock(email: string): Promise<{ locked: boolean; minutesLeft?: number }> {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { loginLockedUntil: true },
+  });
+  if (!user?.loginLockedUntil || user.loginLockedUntil <= new Date()) return { locked: false };
+  const minutesLeft = Math.ceil((user.loginLockedUntil.getTime() - Date.now()) / 60000);
+  return { locked: true, minutesLeft };
+}
+
+export async function resetLoginAttempts(email: string): Promise<void> {
+  await prisma.user.update({
+    where: { email },
+    data: { loginAttempts: 0, loginLockedUntil: null },
+  }).catch(() => {});
 }
 
 const updateProfileSchema = z.object({

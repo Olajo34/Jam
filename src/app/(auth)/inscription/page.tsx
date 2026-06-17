@@ -79,7 +79,7 @@ export default function InscriptionPage() {
           </div>
         )}
 
-        <Field id="password" label="Mot de passe" type="password" placeholder="Minimum 6 caractères" required autoComplete="new-password" />
+        <Field id="password" label="Mot de passe" type="password" placeholder="Minimum 8 caractères" required autoComplete="new-password" minLength={8} />
 
         {state?.error && (
           <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
@@ -110,10 +110,10 @@ export default function InscriptionPage() {
 }
 
 function Field({
-  id, label, type, placeholder, required, autoComplete, labelSuffix,
+  id, label, type, placeholder, required, autoComplete, labelSuffix, minLength,
 }: {
   id: string; label: string; type: string; placeholder: string;
-  required?: boolean; autoComplete?: string; labelSuffix?: string;
+  required?: boolean; autoComplete?: string; labelSuffix?: string; minLength?: number;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -123,7 +123,7 @@ function Field({
       </label>
       <input
         id={id} name={id} type={type} required={required} autoComplete={autoComplete}
-        placeholder={placeholder}
+        placeholder={placeholder} minLength={minLength}
         className="w-full px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-cream)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
       />
     </div>
