@@ -35,13 +35,7 @@ export default async function RecherchePage({
     },
   });
 
-  // Visible uniquement si ≥ 3 services actifs avec au moins une photo
-  const prestataires = allPrestataires.filter(
-    (p) => p.services.filter((s) => s.photos.length > 0).length >= 3
-  ).map((p) => ({
-    ...p,
-    services: p.services.slice(0, 3),
-  }));
+  const prestataires = allPrestataires;
 
   // Compute distance for each prestataire
   type WithDistance = (typeof prestataires)[number] & { distanceKm: number | null };
