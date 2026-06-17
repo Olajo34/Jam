@@ -161,10 +161,12 @@ export default async function HomePage() {
                 Trouver un prestataire
                 <span className="text-base">→</span>
               </Link>
-              <Link href="/inscription?type=prestataire"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-medium tracking-wide border border-[var(--color-border)] text-[var(--color-foreground)] hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)] transition-all bg-white/60">
-                Je suis prestataire
-              </Link>
+              {!session && (
+                <Link href="/inscription?type=prestataire"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-medium tracking-wide border border-[var(--color-border)] text-[var(--color-foreground)] hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)] transition-all bg-white/60">
+                  Je suis prestataire
+                </Link>
+              )}
             </div>
 
             {/* Image hero — mobile uniquement */}
@@ -413,10 +415,17 @@ export default async function HomePage() {
             Des milliers de professionnels et de clients vous attendent sur la plateforme.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/inscription"
-              className="px-8 py-4 rounded-full bg-white text-[var(--color-primary)] text-sm font-semibold tracking-wide hover:bg-white/92 transition shadow-xl">
-              Créer un compte
-            </Link>
+            {!session ? (
+              <Link href="/inscription"
+                className="px-8 py-4 rounded-full bg-white text-[var(--color-primary)] text-sm font-semibold tracking-wide hover:bg-white/92 transition shadow-xl">
+                Créer un compte
+              </Link>
+            ) : (
+              <Link href="/reservations"
+                className="px-8 py-4 rounded-full bg-white text-[var(--color-primary)] text-sm font-semibold tracking-wide hover:bg-white/92 transition shadow-xl">
+                Mes réservations
+              </Link>
+            )}
             <Link href="/recherche"
               className="px-8 py-4 rounded-full border border-white/30 text-white text-sm font-medium tracking-wide hover:bg-white/10 transition backdrop-blur-sm">
               Explorer les prestataires
