@@ -70,7 +70,7 @@ export default async function ConnexionPage({
           // Succès — réinitialiser le compteur
           await resetLoginAttempts(email);
 
-          const destination = redirectTo ?? ROLE_REDIRECT[user!.role] ?? "/";
+          const destination = redirectTo ? decodeURIComponent(redirectTo) : (ROLE_REDIRECT[user!.role] ?? "/");
           await signIn("credentials", { email, password, redirectTo: destination });
         }}
         className="flex flex-col gap-4"

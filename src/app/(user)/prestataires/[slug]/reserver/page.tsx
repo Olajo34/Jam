@@ -15,7 +15,10 @@ export default async function ReserverPage({
   const { slug } = await params;
   const { serviceId } = await searchParams;
   const session = await auth();
-  if (!session) redirect(`/connexion`);
+  if (!session) {
+    const returnUrl = `/prestataires/${slug}/reserver${serviceId ? `?serviceId=${serviceId}` : ""}`;
+    redirect(`/connexion?redirect=${encodeURIComponent(returnUrl)}`);
+  }
 
   const prestataire = await prisma.prestataire.findUnique({
     where: { slug, enrollmentStatus: "APPROVED" },

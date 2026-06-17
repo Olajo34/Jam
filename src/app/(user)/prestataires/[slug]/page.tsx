@@ -226,12 +226,22 @@ export default async function PrestatairePage({
 
       {/* CTA fixe mobile */}
       <div className="sm:hidden fixed bottom-0 inset-x-0 p-4 bg-white border-t border-[var(--color-border)]">
-        <Link
-          href={prestataire.services[0] ? `/prestataires/${slug}/reserver?serviceId=${prestataire.services[0].id}` : "#"}
-          className="block w-full py-3 text-center rounded-full font-medium text-white jam-gradient"
-        >
-          Réserver une prestation
-        </Link>
+        {prestataire.services[0] ? (
+          <Link
+            href={
+              session
+                ? `/prestataires/${slug}/reserver?serviceId=${prestataire.services[0].id}`
+                : `/connexion?redirect=${encodeURIComponent(`/prestataires/${slug}/reserver?serviceId=${prestataire.services[0].id}`)}`
+            }
+            className="block w-full py-3 text-center rounded-full font-medium text-white jam-gradient"
+          >
+            Réserver une prestation
+          </Link>
+        ) : (
+          <button disabled className="block w-full py-3 text-center rounded-full font-medium text-white/60 bg-gray-300">
+            Aucun service disponible
+          </button>
+        )}
       </div>
     </div>
   );
