@@ -98,6 +98,11 @@ const serviceSchema = z.object({
   price: z.coerce.number().min(0),
 });
 
+function parsePhotos(formData: FormData): string[] {
+  const raw = (formData.get("photos") as string) ?? "";
+  return raw.split(",").map((u) => u.trim()).filter((u) => u.startsWith("http")).slice(0, 3);
+}
+
 export async function createService(formData: FormData) {
   const session = await auth();
   if (!session || session.user.role !== "PRESTATAIRE") throw new Error("Non autorisé");
@@ -115,8 +120,10 @@ export async function createService(formData: FormData) {
 
   if (!parsed.success) throw new Error("Données invalides.");
 
-  const photosRaw = (formData.get("photos") as string) ?? "";
-  const photos = photosRaw.split(",").map((u) => u.trim()).filter((u) => u.startsWith("http"));
+  const photos = parsePhotos(formData);
+  if (photos.length < 1) throw new Error("Au moins 1 photo est requise.");
+
+  const videoUrl = (formData.get("videoUrl") as string)?.trim() || null;
 
   await prisma.service.create({
     data: {
@@ -127,6 +134,7 @@ export async function createService(formData: FormData) {
       duration: parsed.data.duration,
       price: parsed.data.price,
       photos,
+      videoUrl,
     },
   });
 
@@ -156,8 +164,10 @@ export async function updateService(serviceId: string, formData: FormData) {
 
   if (!parsed.success) throw new Error("Données invalides.");
 
-  const photosRaw = (formData.get("photos") as string) ?? "";
-  const photos = photosRaw.split(",").map((u) => u.trim()).filter((u) => u.startsWith("http"));
+  const photos = parsePhotos(formData);
+  if (photos.length < 1) throw new Error("Au moins 1 photo est requise.");
+
+  const videoUrl = (formData.get("videoUrl") as string)?.trim() || null;
 
   await prisma.service.update({
     where: { id: serviceId },
@@ -167,7 +177,8 @@ export async function updateService(serviceId: string, formData: FormData) {
       categoryId: parsed.data.categoryId || null,
       duration: parsed.data.duration,
       price: parsed.data.price,
-      ...(photos.length > 0 ? { photos } : {}),
+      photos,
+      videoUrl,
     },
   });
 

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { createService } from "@/lib/actions/prestataire";
 import Link from "next/link";
+import PhotoUploader from "@/components/shared/PhotoUploader";
 
 export default async function NouveauServicePage() {
   const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
@@ -44,7 +45,7 @@ export function ServiceFormFields({
   defaults,
 }: {
   categories: { id: string; name: string; icon?: string | null }[];
-  defaults?: { name?: string; description?: string | null; categoryId?: string | null; duration?: number; price?: number; photos?: string[] };
+  defaults?: { name?: string; description?: string | null; categoryId?: string | null; duration?: number; price?: number; photos?: string[]; videoUrl?: string | null };
 }) {
   return (
     <>
@@ -102,18 +103,30 @@ export function ServiceFormFields({
         </div>
       </div>
 
+      {/* Photos — upload avec compression WebP auto */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-medium text-[var(--color-foreground)]">
-          Photos <span className="font-normal text-[var(--color-muted-foreground)]">(URLs séparées par des virgules)</span>
+          Photos <span className="text-red-500">*</span>
+          <span className="font-normal text-[var(--color-muted-foreground)]"> (1 minimum · 3 maximum)</span>
         </label>
-        <textarea
-          name="photos" rows={2}
-          defaultValue={defaults?.photos?.join(", ") ?? ""}
-          placeholder="https://... , https://..."
-          className="input-base resize-none text-xs"
+        <PhotoUploader defaultUrls={defaults?.photos ?? []} />
+      </div>
+
+      {/* Vidéo — URL YouTube / TikTok / Vimeo */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium text-[var(--color-foreground)]">
+          Vidéo de présentation
+          <span className="font-normal text-[var(--color-muted-foreground)]"> (optionnel)</span>
+        </label>
+        <input
+          name="videoUrl"
+          type="url"
+          defaultValue={defaults?.videoUrl ?? ""}
+          placeholder="https://youtube.com/watch?v=... ou https://tiktok.com/..."
+          className="input-base"
         />
         <p className="text-xs text-[var(--color-muted-foreground)]">
-          Copiez les liens de vos photos depuis Google Drive, Dropbox ou tout hébergeur d'images. Min. 3 photos pour apparaître dans la recherche.
+          Lien YouTube, TikTok ou Vimeo de démonstration de votre prestation.
         </p>
       </div>
     </>

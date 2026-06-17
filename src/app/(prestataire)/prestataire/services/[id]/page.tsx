@@ -34,7 +34,18 @@ export default async function EditServicePage({ params }: { params: Promise<{ id
       </div>
 
       <form action={updateService.bind(null, id)} className="bg-white rounded-2xl border border-[var(--color-border)] p-6 space-y-5">
-        <ServiceFormFields categories={categories} defaults={service} />
+        <ServiceFormFields
+          categories={categories}
+          defaults={{
+            name: service.name,
+            description: service.description,
+            categoryId: service.categoryId,
+            duration: service.duration,
+            price: service.price,
+            photos: service.photos,
+            videoUrl: service.videoUrl,
+          }}
+        />
         <div className="flex gap-3 pt-2">
           <Link
             href="/prestataire/services"

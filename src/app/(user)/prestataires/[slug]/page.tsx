@@ -5,6 +5,14 @@ import { auth } from "@/lib/auth";
 import { ReviewForm } from "./ReviewForm";
 import Link from "next/link";
 
+function getVideoEmbed(url: string): string | null {
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+  const vimeo = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`;
+  return null;
+}
+
 export default async function PrestatairePage({
   params,
   searchParams,
@@ -110,38 +118,67 @@ export default async function PrestatairePage({
         {prestataire.services.length === 0 ? (
           <p className="text-sm text-[var(--color-muted-foreground)]">Aucun service disponible.</p>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {prestataire.services.map((service) => (
-              <div key={service.id} className="bg-white rounded-2xl border border-[var(--color-border)] p-4 flex items-center justify-between gap-4">
-                <div className="min-w-0">
-                  <p className="font-medium text-[var(--color-foreground)]">{service.name}</p>
-                  {service.category && (
-                    <span className="text-xs text-[var(--color-muted-foreground)] bg-[var(--color-cream)] px-2 py-0.5 rounded-full mt-1 inline-block">
-                      {service.category.name}
-                    </span>
-                  )}
-                  {service.description && (
-                    <p className="text-sm text-[var(--color-muted-foreground)] mt-1 line-clamp-1">{service.description}</p>
-                  )}
-                  <p className="text-xs text-[var(--color-muted-foreground)] mt-1">⏱ {service.duration} min</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="font-bold text-[var(--color-foreground)] text-lg">{formatFCFA(service.price)}</p>
-                  {session ? (
-                    <Link
-                      href={`/prestataires/${slug}/reserver?serviceId=${service.id}`}
-                      className="inline-block mt-2 px-4 py-1.5 rounded-full text-xs font-medium text-white jam-gradient hover:opacity-90 transition-opacity"
-                    >
-                      Réserver
-                    </Link>
-                  ) : (
-                    <Link
-                      href={`/connexion?redirect=/prestataires/${slug}/reserver?serviceId=${service.id}`}
-                      className="inline-block mt-2 px-4 py-1.5 rounded-full text-xs font-medium text-white jam-gradient hover:opacity-90 transition-opacity"
-                    >
-                      Réserver
-                    </Link>
-                  )}
+              <div key={service.id} className="bg-white rounded-2xl border border-[var(--color-border)] overflow-hidden">
+                {/* Photos du service */}
+                {service.photos.length > 0 && (
+                  <div className="flex gap-1 h-40 overflow-hidden">
+                    {service.photos.slice(0, 3).map((photo, i) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={i}
+                        src={photo}
+                        alt={service.name}
+                        className={`object-cover h-full ${service.photos.length === 1 ? "w-full" : service.photos.length === 2 ? "w-1/2" : "w-1/3"}`}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Vidéo embarquée */}
+                {service.videoUrl && getVideoEmbed(service.videoUrl) && (
+                  <div className="aspect-video">
+                    <iframe
+                      src={getVideoEmbed(service.videoUrl)!}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                )}
+
+                <div className="p-4 flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="font-medium text-[var(--color-foreground)]">{service.name}</p>
+                    {service.category && (
+                      <span className="text-xs text-[var(--color-muted-foreground)] bg-[var(--color-cream)] px-2 py-0.5 rounded-full mt-1 inline-block">
+                        {service.category.name}
+                      </span>
+                    )}
+                    {service.description && (
+                      <p className="text-sm text-[var(--color-muted-foreground)] mt-1 line-clamp-2">{service.description}</p>
+                    )}
+                    <p className="text-xs text-[var(--color-muted-foreground)] mt-1">⏱ {service.duration} min</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="font-bold text-[var(--color-foreground)] text-lg">{formatFCFA(service.price)}</p>
+                    {session ? (
+                      <Link
+                        href={`/prestataires/${slug}/reserver?serviceId=${service.id}`}
+                        className="inline-block mt-2 px-4 py-1.5 rounded-full text-xs font-medium text-white jam-gradient hover:opacity-90 transition-opacity"
+                      >
+                        Réserver
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/connexion?redirect=/prestataires/${slug}/reserver?serviceId=${service.id}`}
+                        className="inline-block mt-2 px-4 py-1.5 rounded-full text-xs font-medium text-white jam-gradient hover:opacity-90 transition-opacity"
+                      >
+                        Réserver
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
