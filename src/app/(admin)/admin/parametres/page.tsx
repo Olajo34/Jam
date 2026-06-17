@@ -7,7 +7,7 @@ export default async function ParametresPage() {
     proCommissionRate: 0.05,
     goldCommissionRate: 0.03,
     proPlanPrice: 5000,
-    goldPlanPrice: 15000,
+    goldPlanPrice: 10000,
     proBookingCap: 100,
     freeBookingCap: 10,
   };

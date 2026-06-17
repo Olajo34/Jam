@@ -20,7 +20,7 @@ export default async function AbonnementPage({
   if (!prestataire) redirect("/prestataire/onboarding");
 
   const config = await prisma.platformConfig.findUnique({ where: { id: "singleton" } }) ?? {
-    freeBookingCap: 10, proBookingCap: 100, proPlanPrice: 5000, goldPlanPrice: 15000,
+    freeBookingCap: 10, proBookingCap: 100, proPlanPrice: 5000, goldPlanPrice: 10000,
   };
 
   const sub = prestataire.subscription;

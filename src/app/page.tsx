@@ -45,7 +45,7 @@ const PLANS = [
   {
     key: "gold",
     label: "Gold",
-    price: "15 000 XAF",
+    price: "10 000 XAF",
     period: "/ mois · illimité",
     featured: false,
     features: [

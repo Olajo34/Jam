@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   const amount = (paymentData.transaction as { amount?: number }).amount ?? 0;
   const config = await prisma.platformConfig.findUnique({ where: { id: "singleton" } })
-    ?? { proPlanPrice: 5000, goldPlanPrice: 15000 };
+    ?? { proPlanPrice: 5000, goldPlanPrice: 10000 };
 
   const plan = amount >= config.goldPlanPrice ? "GOLD" : "PRO";
 

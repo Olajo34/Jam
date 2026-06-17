@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   if (!prestataire) return NextResponse.json({ error: "Profil prestataire introuvable" }, { status: 404 });
 
   const config = await prisma.platformConfig.findUnique({ where: { id: "singleton" } })
-    ?? { proPlanPrice: 5000, goldPlanPrice: 15000 };
+    ?? { proPlanPrice: 5000, goldPlanPrice: 10000 };
 
   const amount = plan === "GOLD" ? config.goldPlanPrice : config.proPlanPrice;
   const reference = `SUB-${prestataire.id}-${Date.now()}`;
