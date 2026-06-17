@@ -32,3 +32,61 @@ export async function changeUserRole(userId: string, formData: FormData) {
 
   revalidatePath("/admin/utilisateurs");
 }
+
+// ─── Conformité prestataires ──────────────────────────────────────────────────
+
+export async function sendReminderToPrestataire(prestataireId: string) {
+  const session = await auth();
+  if (!session || session.user.role !== "ADMIN") throw new Error("Non autorisé");
+
+  await prisma.prestataire.update({
+    where: { id: prestataireId },
+    data: { lastReminderAt: new Date() },
+  });
+
+  revalidatePath("/admin/prestataires");
+}
+
+export async function suspendPrestataire(prestataireId: string, reason: string) {
+  const session = await auth();
+  if (!session || session.user.role !== "ADMIN") throw new Error("Non autorisé");
+
+  await prisma.prestataire.update({
+    where: { id: prestataireId },
+    data: {
+      suspendedAt: new Date(),
+      suspendedReason: reason.trim(),
+      enrollmentStatus: "REJECTED",
+    },
+  });
+
+  revalidatePath("/admin/prestataires");
+}
+
+export async function reinstatePrestataire(prestataireId: string) {
+  const session = await auth();
+  if (!session || session.user.role !== "ADMIN") throw new Error("Non autorisé");
+
+  await prisma.prestataire.update({
+    where: { id: prestataireId },
+    data: {
+      suspendedAt: null,
+      suspendedReason: null,
+      enrollmentStatus: "APPROVED",
+    },
+  });
+
+  revalidatePath("/admin/prestataires");
+}
+
+export async function terminatePrestataire(userId: string) {
+  const session = await auth();
+  if (!session || session.user.role !== "ADMIN") throw new Error("Non autorisé");
+
+  const target = await prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+  if (!target) throw new Error("Utilisateur introuvable.");
+  if (target.role === "ADMIN") throw new Error("Impossible de résilier un compte Admin.");
+
+  await prisma.user.delete({ where: { id: userId } });
+  revalidatePath("/admin/prestataires");
+}

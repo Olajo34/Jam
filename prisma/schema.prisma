@@ -144,6 +144,9 @@ model Prestataire {
   niu              String?
   enrollmentStatus EnrollmentStatus @default(APPROVED)
   isFeatured       Boolean          @default(false)
+  suspendedAt      DateTime?
+  suspendedReason  String?
+  lastReminderAt   DateTime?
   latitude         Float?
   longitude        Float?
   rating           Float            @default(0)

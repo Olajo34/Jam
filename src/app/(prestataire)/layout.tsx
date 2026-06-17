@@ -17,6 +17,40 @@ export default async function PrestataireLayout({ children }: { children: React.
   const session = await auth();
   if (!session || session.user.role !== "PRESTATAIRE") redirect("/connexion");
 
+  const prestataire = await import("@/lib/prisma").then(({ prisma }) =>
+    prisma.prestataire.findUnique({
+      where: { userId: session.user.id },
+      select: { suspendedAt: true, suspendedReason: true },
+    })
+  );
+
+  if (prestataire?.suspendedAt) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-cream)] p-6">
+        <div className="max-w-md w-full bg-white rounded-2xl border border-red-200 p-8 text-center shadow-sm">
+          <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">⏸</span>
+          </div>
+          <h1 className="text-xl font-display font-semibold text-[var(--color-foreground)] mb-2">
+            Compte suspendu
+          </h1>
+          <p className="text-sm text-[var(--color-muted-foreground)] mb-4">
+            Votre compte prestataire a été temporairement suspendu par l'équipe Jam.
+          </p>
+          {prestataire.suspendedReason && (
+            <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 mb-4 text-left">
+              <p className="text-xs font-semibold text-red-700 mb-1">Motif</p>
+              <p className="text-sm text-red-800">{prestataire.suspendedReason}</p>
+            </div>
+          )}
+          <p className="text-xs text-[var(--color-muted-foreground)]">
+            Contactez-nous à <a href="mailto:support@jamfeeling.com" className="underline">support@jamfeeling.com</a> pour régulariser votre situation.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex bg-[var(--color-cream)]">
       {/* Sidebar */}
