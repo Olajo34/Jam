@@ -54,8 +54,12 @@ export default function PhotoUploader({ defaultUrls = [] }: { defaultUrls?: stri
         const fd = new FormData();
         fd.append("file", compressed, "photo.webp");
         const res = await fetch("/api/upload", { method: "POST", body: fd });
+        if (!res.ok) {
+          let errMsg = `Erreur serveur (${res.status})`;
+          try { errMsg = (await res.json()).error ?? errMsg; } catch {}
+          throw new Error(errMsg);
+        }
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? "Upload échoué");
         newUrls.push(data.url as string);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Erreur lors du téléchargement");
