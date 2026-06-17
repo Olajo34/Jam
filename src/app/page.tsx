@@ -435,49 +435,72 @@ export default async function HomePage() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────────────── */}
-      <footer className="bg-[var(--color-dark)] text-white/40 py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-start justify-between gap-12 mb-12">
-            <div className="max-w-xs">
-              <Image src="/jam-logo-primary.svg" alt="Jam" width={72} height={28} className="brightness-0 invert opacity-60 mb-5" />
-              <p className="text-sm leading-[1.8]">
-                Jam est une marque du groupe{" "}
-                <span className="text-white/70 font-medium">Elokan CS</span>,
-                spécialiste du développement de plateformes numériques adaptées aux marchés africains.
-              </p>
-            </div>
+      <footer className="bg-[var(--color-dark)] text-white/40 py-10 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col items-center gap-6">
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-10 text-sm">
-              <div>
-                <p className="text-white/25 uppercase tracking-[0.15em] text-xs font-medium mb-4">Plateforme</p>
-                <ul className="space-y-2.5">
-                  <li><Link href="/recherche" className="hover:text-white/80 transition-colors">Explorer</Link></li>
-                  <li><Link href="/connexion" className="hover:text-white/80 transition-colors">Connexion</Link></li>
-                  <li><Link href="/inscription" className="hover:text-white/80 transition-colors">S'inscrire</Link></li>
-                </ul>
-              </div>
-              <div>
-                <p className="text-white/25 uppercase tracking-[0.15em] text-xs font-medium mb-4">À propos</p>
-                <ul className="space-y-2.5">
-                  <li><Link href="/a-propos" className="hover:text-white/80 transition-colors">À propos de Jam</Link></li>
-                  <li><Link href="/elokan" className="hover:text-white/80 transition-colors">Groupe Elokan CS</Link></li>
-                  <li><Link href="/accessibilite" className="hover:text-white/80 transition-colors">Accessibilité</Link></li>
-                </ul>
-              </div>
-              <div>
-                <p className="text-white/25 uppercase tracking-[0.15em] text-xs font-medium mb-4">Légal</p>
-                <ul className="space-y-2.5">
-                  <li><Link href="/cgu" className="hover:text-white/80 transition-colors">CGU</Link></li>
-                  <li><Link href="/contact" className="hover:text-white/80 transition-colors">Contact</Link></li>
-                </ul>
-              </div>
-            </div>
+          {/* Logo */}
+          <Image src="/jam-logo-primary.svg" alt="Jam" width={64} height={25} className="brightness-0 invert opacity-50" />
+
+          {/* Liens essentiels */}
+          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs">
+            <Link href="/recherche" className="hover:text-white/70 transition-colors">Explorer</Link>
+            <Link href="/a-propos" className="hover:text-white/70 transition-colors">À propos</Link>
+            <Link href="/contact" className="hover:text-white/70 transition-colors">Contact</Link>
+            <Link href="/cgu" className="hover:text-white/70 transition-colors">CGU</Link>
+          </nav>
+
+          {/* Réseaux sociaux */}
+          <div className="flex items-center gap-4">
+            {/* Instagram */}
+            <a href="https://instagram.com/jamfeeling" target="_blank" rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
+            {/* TikTok */}
+            <a href="https://tiktok.com/@jamfeeling" target="_blank" rel="noopener noreferrer"
+              aria-label="TikTok"
+              className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.53V6.77a4.85 4.85 0 01-1.02-.08z"/>
+              </svg>
+            </a>
+            {/* Facebook */}
+            <a href="https://facebook.com/jamfeeling" target="_blank" rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+              </svg>
+            </a>
+            {/* WhatsApp */}
+            <a href="https://wa.me/237600000000" target="_blank" rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.093.544 4.059 1.497 5.77L0 24l6.404-1.675A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.372l-.36-.213-3.714.972.99-3.617-.235-.372A9.818 9.818 0 112 12c0 5.422 4.398 9.818 9.818 9.818h.182z"/>
+              </svg>
+            </a>
+            {/* LinkedIn */}
+            <a href="https://linkedin.com/company/jamfeeling" target="_blank" rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/30 transition-all">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+                <circle cx="4" cy="4" r="2"/>
+              </svg>
+            </a>
           </div>
 
-          <div className="border-t border-white/8 pt-7 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-            <p>© {new Date().getFullYear()} Jam by Elokan CS · Beauté & Bien-être · Zone CEMAC</p>
-            <p className="text-white/20">Tous droits réservés</p>
-          </div>
+          {/* Copyright */}
+          <p className="text-xs text-white/25 text-center">
+            © {new Date().getFullYear()} Jam by Elokan CS · Beauté &amp; Bien-être · Zone CEMAC
+          </p>
         </div>
       </footer>
     </main>
