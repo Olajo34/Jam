@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import PrestataireActions from "./PrestataireActions";
 
 const CRITERIA = [
@@ -244,11 +245,19 @@ export default async function PrestataireConformitePage({
 
                       {/* Actions */}
                       <td className="px-5 py-4">
-                        <PrestataireActions
-                          prestataireId={p.id}
-                          userId={p.user.id}
-                          isSuspended={isSuspended}
-                        />
+                        <div className="flex flex-col gap-2">
+                          <Link
+                            href={`/admin/prestataires/${p.id}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--color-primary)] border border-[var(--color-primary)]/30 hover:bg-[var(--color-primary)]/5 transition-colors w-fit"
+                          >
+                            🔍 Voir la fiche
+                          </Link>
+                          <PrestataireActions
+                            prestataireId={p.id}
+                            userId={p.user.id}
+                            isSuspended={isSuspended}
+                          />
+                        </div>
                       </td>
                     </tr>
                   );
