@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { updateProfile, logOut } from "@/lib/actions/auth";
 import Link from "next/link";
+import AvatarUploader from "@/components/shared/AvatarUploader";
 
 export default async function ProfilPage() {
   const session = await auth();
@@ -31,20 +32,32 @@ export default async function ProfilPage() {
       </div>
 
       {/* Avatar + stats */}
-      <div className="bg-white rounded-2xl border border-[var(--color-border)] p-6 flex items-center gap-5">
-        <div className="w-16 h-16 rounded-2xl jam-gradient flex items-center justify-center text-white text-2xl font-bold shrink-0">
-          {user.name?.[0]?.toUpperCase() ?? "U"}
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[var(--color-foreground)] truncate">{user.name}</p>
-          <p className="text-sm text-[var(--color-muted-foreground)] truncate">{user.email}</p>
-          <span className="inline-block mt-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-cream)] text-[var(--color-foreground)]">
-            {ROLE_LABELS[user.role] ?? user.role}
-          </span>
-        </div>
-        <div className="text-center shrink-0">
-          <p className="text-2xl font-display font-bold text-[var(--color-foreground)]">{user._count.bookings}</p>
-          <p className="text-xs text-[var(--color-muted-foreground)]">réservation{user._count.bookings > 1 ? "s" : ""}</p>
+      <div className="bg-white rounded-2xl border border-[var(--color-border)] p-6">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          {/* Photo de profil */}
+          <AvatarUploader
+            currentImage={user.image}
+            initials={(user.name?.[0] ?? "U").toUpperCase()}
+          />
+
+          {/* Infos */}
+          <div className="flex-1 min-w-0 text-center sm:text-left">
+            <p className="font-semibold text-lg text-[var(--color-foreground)] truncate">{user.name}</p>
+            <p className="text-sm text-[var(--color-muted-foreground)] truncate">{user.email}</p>
+            <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-cream)] text-[var(--color-foreground)]">
+              {ROLE_LABELS[user.role] ?? user.role}
+            </span>
+            <div className="mt-3 flex justify-center sm:justify-start gap-6">
+              <div className="text-center">
+                <p className="text-2xl font-display font-bold text-[var(--color-foreground)]">{user._count.bookings}</p>
+                <p className="text-xs text-[var(--color-muted-foreground)]">réservation{user._count.bookings > 1 ? "s" : ""}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-display font-bold text-[var(--color-foreground)]">{user._count.reviews}</p>
+                <p className="text-xs text-[var(--color-muted-foreground)]">avis</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

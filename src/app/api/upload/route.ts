@@ -27,8 +27,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Fichier trop grand (max 5 Mo)" }, { status: 400 });
     }
 
+    const folder = (formData.get("folder") as string | null) ?? "services";
+    const safeFolder = ["services", "avatars", "covers"].includes(folder) ? folder : "services";
     const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.webp`;
-    const path = `services/${fileName}`;
+    const path = `${safeFolder}/${fileName}`;
     const buffer = await file.arrayBuffer();
 
     const storageRes = await fetch(

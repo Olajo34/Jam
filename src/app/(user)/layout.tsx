@@ -1,10 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { AgentChat } from "@/components/shared/AgentChat";
 
 export default async function UserLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
+  const userImage = session
+    ? (await prisma.user.findUnique({ where: { id: session.user.id }, select: { image: true } }))?.image
+    : null;
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--color-cream)]">
@@ -21,11 +25,15 @@ export default async function UserLayout({ children }: { children: React.ReactNo
               Mes réservations
             </Link>
             {session ? (
-              <Link
-                href="/profil"
-                className="w-8 h-8 rounded-full jam-gradient flex items-center justify-center text-white text-xs font-bold"
-              >
-                {session.user.name?.[0]?.toUpperCase() ?? "U"}
+              <Link href="/profil" className="w-8 h-8 rounded-full overflow-hidden shrink-0 ring-2 ring-[var(--color-primary)]/20 hover:ring-[var(--color-primary)]/60 transition-all">
+                {userImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={userImage} alt="" className="w-full h-full object-cover object-center" />
+                ) : (
+                  <div className="w-full h-full jam-gradient flex items-center justify-center text-white text-xs font-bold">
+                    {session.user.name?.[0]?.toUpperCase() ?? "U"}
+                  </div>
+                )}
               </Link>
             ) : (
               <Link

@@ -162,6 +162,20 @@ export async function updateProfile(formData: FormData) {
   revalidatePath("/profil");
 }
 
+export async function updateAvatar(url: string): Promise<{ error?: string }> {
+  const session = await auth();
+  if (!session) return { error: "Non autorisé" };
+  if (!url.startsWith("https://")) return { error: "URL invalide" };
+
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: { image: url },
+  });
+
+  revalidatePath("/profil");
+  return {};
+}
+
 export async function logOut() {
   await signOut({ redirectTo: "/" });
 }
