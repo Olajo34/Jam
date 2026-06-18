@@ -9,7 +9,6 @@ const NAV_ITEMS = [
   { href: "/admin/prestataires", label: "Conformité", icon: "🏪" },
   { href: "/admin/utilisateurs", label: "Utilisateurs", icon: "👥" },
   { href: "/admin/finances", label: "Finances", icon: "💰" },
-  { href: "/admin/notchpay", label: "NotchPay", icon: "💳" },
   { href: "/admin/parametres", label: "Paramètres", icon: "⚙️" },
 ];
 

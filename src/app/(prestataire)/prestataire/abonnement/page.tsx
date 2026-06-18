@@ -2,14 +2,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { formatFCFA } from "@/lib/utils";
-import UpgradeButton from "./UpgradeButton";
-
-export default async function AbonnementPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ processing?: string }>;
-}) {
-  const { processing } = await searchParams;
+export default async function AbonnementPage() {
+  const processing = false;
   const session = await auth();
   if (!session) redirect("/connexion");
 
@@ -158,18 +152,16 @@ export default async function AbonnementPage({
                   </ul>
                 </div>
                 {!isCurrent && p.price > 0 && (
-                  <UpgradeButton
-                    plan={p.key as "PRO" | "GOLD"}
-                    label={p.label}
-                    gold={p.key === "GOLD"}
-                  />
+                  <span className="shrink-0 px-4 py-2 rounded-full text-xs font-medium border border-[var(--color-border)] text-[var(--color-muted-foreground)] bg-[var(--color-cream)]">
+                    Bientôt disponible
+                  </span>
                 )}
               </div>
             );
           })}
         </div>
         <p className="text-xs text-[var(--color-muted-foreground)] mt-3">
-          💳 Paiement sécurisé via mobile money (MTN, Orange, Wave) par NotchPay.
+          💳 Paiement mobile money bientôt disponible via PawaPay.
         </p>
       </div>
 

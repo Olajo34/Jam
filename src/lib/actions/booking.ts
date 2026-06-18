@@ -66,7 +66,7 @@ export async function createBooking(formData: FormData) {
     });
   }
 
-  redirect(`/paiement/${booking.id}`);
+  redirect(`/reservations?nouveau=${booking.id}`);
 }
 
 export async function cancelBooking(bookingId: string) {
