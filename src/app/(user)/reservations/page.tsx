@@ -147,9 +147,12 @@ function BookingCard({ booking: b }: { booking: BookingWithRelations }) {
       {(canCancel || canReview || b.payment?.status === "PENDING") && (
         <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[var(--color-border)]">
           {b.payment?.status === "PENDING" && (
-            <span className="px-4 py-2 rounded-xl text-xs font-medium border border-[var(--color-border)] text-[var(--color-muted-foreground)] bg-[var(--color-cream)]">
-              💳 Paiement bientôt disponible
-            </span>
+            <Link
+              href={`/paiement/${b.id}`}
+              className="px-4 py-2 rounded-xl text-xs font-medium text-white jam-gradient hover:opacity-90"
+            >
+              💳 Finaliser le paiement
+            </Link>
           )}
           {canReview && (
             <Link
