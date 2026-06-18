@@ -56,7 +56,7 @@ const CATEGORIES = [
   {
     name: "Cils & Sourcils",
     slug: "cils-sourcils",
-    img: "https://images.unsplash.com/photo-1631209121750-a9f656d1e5da?w=500&q=80",
+    img: "https://images.unsplash.com/photo-1512207736890-6ffed8a84e8d?w=500&q=80",
     services: ["Extension de cils", "Pose cils volume", "Design sourcils", "Microblading", "Lamination cils", "Teinture cils"],
   },
   {
