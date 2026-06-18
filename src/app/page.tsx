@@ -355,7 +355,7 @@ export default async function HomePage() {
           {/* Manou callout */}
           <div className="flex items-center gap-3 bg-[var(--color-card)] border border-[var(--color-border)] rounded-xl px-5 py-3.5 mb-10 max-w-md mx-auto">
             <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
-              <Image src="/images/manou-avatar.jpg" alt="Manou" width={32} height={32} className="w-full h-full object-cover" />
+              <Image src="/images/Manou.PNG" alt="Manou" width={32} height={32} className="w-full h-full object-cover" />
             </div>
             <p className="text-xs text-[var(--color-muted-foreground)]">
               <strong className="text-[var(--color-foreground)]">Manou IA</strong> — assistante business — incluse dès le Plan Pro

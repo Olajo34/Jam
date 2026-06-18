@@ -58,7 +58,7 @@ export function ManouAdmin() {
       {/* Header */}
       <div className="px-6 py-4 border-b border-[var(--color-border)] flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl overflow-hidden shrink-0">
-          <Image src="/images/manou-avatar.jpg" alt="Manou" width={36} height={36} className="w-full h-full object-cover" />
+          <Image src="/images/Manou.PNG" alt="Manou" width={36} height={36} className="w-full h-full object-cover" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">

@@ -22,7 +22,7 @@ export function ManouPro({ plan = "FREE" }: { plan?: string }) {
     return (
       <div className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] p-6 flex items-start gap-4">
         <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0">
-          <Image src="/images/manou-avatar.jpg" alt="Manou" width={40} height={40} className="w-full h-full object-cover" />
+          <Image src="/images/Manou.PNG" alt="Manou" width={40} height={40} className="w-full h-full object-cover" />
         </div>
         <div className="flex-1">
           <p className="font-semibold text-[var(--color-foreground)]">Manou — Assistante IA business</p>
@@ -44,7 +44,7 @@ export function ManouPro({ plan = "FREE" }: { plan?: string }) {
     <div className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)]">
       <div className="px-5 py-4 border-b border-[var(--color-border)] flex items-center gap-3">
         <div className="w-8 h-8 rounded-xl overflow-hidden shrink-0">
-          <Image src="/images/manou-avatar.jpg" alt="Manou" width={32} height={32} className="w-full h-full object-cover" />
+          <Image src="/images/Manou.PNG" alt="Manou" width={32} height={32} className="w-full h-full object-cover" />
         </div>
         <div>
           <p className="font-semibold text-[var(--color-foreground)] text-sm">Manou — Suggestions business</p>
