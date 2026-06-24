@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { updateProfile, logOut } from "@/lib/actions/auth";
 import Link from "next/link";
 import AvatarUploader from "@/components/shared/AvatarUploader";
+import { CalendarDays, Search, ChevronRight, LogOut } from "lucide-react";
 
 export default async function ProfilPage() {
   const session = await auth();
@@ -34,13 +35,10 @@ export default async function ProfilPage() {
       {/* Avatar + stats */}
       <div className="bg-white rounded-2xl border border-[var(--color-border)] p-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          {/* Photo de profil */}
           <AvatarUploader
             currentImage={user.image}
             initials={(user.name?.[0] ?? "U").toUpperCase()}
           />
-
-          {/* Infos */}
           <div className="flex-1 min-w-0 text-center sm:text-left">
             <p className="font-semibold text-lg text-[var(--color-foreground)] truncate">{user.name}</p>
             <p className="text-sm text-[var(--color-muted-foreground)] truncate">{user.email}</p>
@@ -96,7 +94,7 @@ export default async function ProfilPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-2.5 rounded-full font-medium text-sm text-white jam-gradient hover:opacity-90 transition-opacity"
+            className="w-full py-2.5 rounded-full font-medium text-sm text-white jam-gradient hover:opacity-90 transition-opacity cursor-pointer"
           >
             Enregistrer les modifications
           </button>
@@ -104,20 +102,22 @@ export default async function ProfilPage() {
       </div>
 
       {/* Quick links */}
-      <div className="bg-white rounded-2xl border border-[var(--color-border)] divide-y divide-[var(--color-border)]">
+      <div className="bg-white rounded-2xl border border-[var(--color-border)] divide-y divide-[var(--color-border)] overflow-hidden">
         <Link
           href="/reservations"
-          className="flex items-center justify-between px-5 py-4 hover:bg-[var(--color-cream)] transition-colors"
+          className="flex items-center gap-3 px-5 py-4 hover:bg-[var(--color-cream)] transition-colors cursor-pointer"
         >
-          <span className="text-sm font-medium text-[var(--color-foreground)]">📅 Mes réservations</span>
-          <span className="text-[var(--color-muted-foreground)]">→</span>
+          <CalendarDays size={16} className="text-[var(--color-muted-foreground)] shrink-0" strokeWidth={1.5} />
+          <span className="text-sm font-medium text-[var(--color-foreground)] flex-1">Mes réservations</span>
+          <ChevronRight size={15} className="text-[var(--color-muted-foreground)]" strokeWidth={1.5} />
         </Link>
         <Link
           href="/recherche"
-          className="flex items-center justify-between px-5 py-4 hover:bg-[var(--color-cream)] transition-colors"
+          className="flex items-center gap-3 px-5 py-4 hover:bg-[var(--color-cream)] transition-colors cursor-pointer"
         >
-          <span className="text-sm font-medium text-[var(--color-foreground)]">🔍 Explorer les prestataires</span>
-          <span className="text-[var(--color-muted-foreground)]">→</span>
+          <Search size={16} className="text-[var(--color-muted-foreground)] shrink-0" strokeWidth={1.5} />
+          <span className="text-sm font-medium text-[var(--color-foreground)] flex-1">Explorer les prestataires</span>
+          <ChevronRight size={15} className="text-[var(--color-muted-foreground)]" strokeWidth={1.5} />
         </Link>
       </div>
 
@@ -125,8 +125,9 @@ export default async function ProfilPage() {
       <form action={logOut}>
         <button
           type="submit"
-          className="w-full py-3 rounded-full text-sm font-medium border border-red-200 text-red-500 hover:bg-red-50 transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-full text-sm font-medium border border-red-200 text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
         >
+          <LogOut size={15} strokeWidth={2} />
           Se déconnecter
         </button>
       </form>

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { cancelBooking } from "@/lib/actions/booking";
 import { formatFCFA } from "@/lib/utils";
 import Link from "next/link";
+import { CalendarDays, CheckCircle2, MapPin, CreditCard, Star } from "lucide-react";
 
 const STATUS_CONFIG = {
   PENDING:   { label: "En attente",  color: "bg-amber-100 text-amber-700",     dot: "bg-amber-400" },
@@ -41,7 +42,7 @@ export default async function ReservationsPage({
       {/* Success banner */}
       {success && (
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3">
-          <span className="text-2xl">✅</span>
+          <CheckCircle2 size={22} className="text-emerald-600 shrink-0" strokeWidth={2} />
           <div>
             <p className="font-semibold text-emerald-800">Paiement confirmé !</p>
             <p className="text-sm text-emerald-600">Votre réservation a été enregistrée. Le prestataire vous contactera pour confirmer.</p>
@@ -56,10 +57,12 @@ export default async function ReservationsPage({
 
       {bookings.length === 0 && (
         <div className="bg-white rounded-2xl border border-[var(--color-border)] p-12 text-center">
-          <p className="text-4xl mb-4">📅</p>
+          <div className="w-14 h-14 rounded-full bg-[var(--color-cream)] flex items-center justify-center mx-auto mb-4">
+            <CalendarDays size={26} className="text-[var(--color-muted-foreground)]" strokeWidth={1.5} />
+          </div>
           <p className="font-semibold text-[var(--color-foreground)] mb-2">Aucune réservation</p>
           <p className="text-sm text-[var(--color-muted-foreground)] mb-6">Explorez nos prestataires et réservez votre première prestation.</p>
-          <Link href="/recherche" className="inline-flex px-6 py-2.5 rounded-full text-sm font-medium text-white jam-gradient hover:opacity-90">
+          <Link href="/recherche" className="inline-flex px-6 py-2.5 rounded-full text-sm font-medium text-white jam-gradient hover:opacity-90 transition-opacity">
             Explorer les prestataires
           </Link>
         </div>
@@ -123,7 +126,10 @@ function BookingCard({ booking: b }: { booking: BookingWithRelations }) {
             {b.prestataire.businessName}
           </Link>
           {b.prestataire.city && (
-            <p className="text-xs text-[var(--color-muted-foreground)]">📍 {b.prestataire.city}</p>
+            <p className="text-xs text-[var(--color-muted-foreground)] flex items-center gap-1">
+              <MapPin size={10} strokeWidth={2} />
+              {b.prestataire.city}
+            </p>
           )}
           <div className="flex items-center gap-2 mt-2">
             <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${cfg?.color}`}>
@@ -149,17 +155,19 @@ function BookingCard({ booking: b }: { booking: BookingWithRelations }) {
           {b.payment?.status === "PENDING" && (
             <Link
               href={`/paiement/${b.id}`}
-              className="px-4 py-2 rounded-xl text-xs font-medium text-white jam-gradient hover:opacity-90"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium text-white jam-gradient hover:opacity-90 transition-opacity"
             >
-              💳 Finaliser le paiement
+              <CreditCard size={12} strokeWidth={2} />
+              Finaliser le paiement
             </Link>
           )}
           {canReview && (
             <Link
               href={`/prestataires/${b.prestataire.slug}?avis=${b.id}`}
-              className="px-4 py-2 rounded-xl text-xs font-medium border border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium border border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100 transition-colors"
             >
-              ★ Laisser un avis
+              <Star size={12} fill="currentColor" strokeWidth={0} />
+              Laisser un avis
             </Link>
           )}
           {canCancel && (

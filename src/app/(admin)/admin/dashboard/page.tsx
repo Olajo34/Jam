@@ -4,6 +4,7 @@ import { approveEnrollment, rejectEnrollment } from "@/lib/actions/enrollment";
 import { auth } from "@/lib/auth";
 import { ManouAdmin } from "@/components/shared/ManouAdmin";
 import Link from "next/link";
+import { type LucideIcon, Users, Briefcase, CalendarDays, Ticket, Banknote, CreditCard, Star, AlertTriangle, Users2, ClipboardList, TrendingUp, Settings } from "lucide-react";
 
 export default async function AdminDashboard() {
   const session = await auth();
@@ -98,15 +99,17 @@ export default async function AdminDashboard() {
             {" · "}Connecté en tant que <span className="font-medium">{session?.user.email?.split("@")[0]}</span>
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {pendingEnrollments > 0 && (
-            <Link href="/moderateur/enrollments" className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-700 text-sm font-medium hover:bg-amber-200 transition-colors">
-              ⚠️ {pendingEnrollments} dossier{pendingEnrollments > 1 ? "s" : ""} en attente
+            <Link href="/moderateur/enrollments" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-700 text-sm font-medium hover:bg-amber-200 transition-colors">
+              <AlertTriangle size={14} strokeWidth={2} />
+              {pendingEnrollments} dossier{pendingEnrollments > 1 ? "s" : ""} en attente
             </Link>
           )}
           {openTickets > 0 && (
-            <Link href="/moderateur/tickets" className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-100 text-red-600 text-sm font-medium hover:bg-red-200 transition-colors">
-              🎫 {openTickets} ticket{openTickets > 1 ? "s" : ""} ouvert{openTickets > 1 ? "s" : ""}
+            <Link href="/moderateur/tickets" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-100 text-red-600 text-sm font-medium hover:bg-red-200 transition-colors">
+              <Ticket size={14} strokeWidth={2} />
+              {openTickets} ticket{openTickets > 1 ? "s" : ""} ouvert{openTickets > 1 ? "s" : ""}
             </Link>
           )}
         </div>
@@ -114,17 +117,17 @@ export default async function AdminDashboard() {
 
       {/* KPIs principaux */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard label="Clients inscrits" value={totalUsers.toLocaleString("fr-FR")} sub={`+${newUsersWeek} cette semaine`} icon="👥" color="blue" />
-        <KpiCard label="Prestataires actifs" value={totalPrestataires.toLocaleString("fr-FR")} sub={`${pendingEnrollments} en attente`} icon="💼" color="purple" alert={pendingEnrollments > 0} />
-        <KpiCard label="Réservations (mois)" value={monthlyBookings.toLocaleString("fr-FR")} sub={`${totalBookings} au total`} icon="📅" color="amber" />
-        <KpiCard label="Tickets ouverts" value={openTickets.toString()} sub={failedPayments > 0 ? `${failedPayments} paiements échoués` : "Aucun problème"} icon="🎫" color="red" alert={openTickets > 0} />
+        <KpiCard label="Clients inscrits" value={totalUsers.toLocaleString("fr-FR")} sub={`+${newUsersWeek} cette semaine`} Icon={Users} color="blue" />
+        <KpiCard label="Prestataires actifs" value={totalPrestataires.toLocaleString("fr-FR")} sub={`${pendingEnrollments} en attente`} Icon={Briefcase} color="purple" alert={pendingEnrollments > 0} />
+        <KpiCard label="Réservations (mois)" value={monthlyBookings.toLocaleString("fr-FR")} sub={`${totalBookings} au total`} Icon={CalendarDays} color="amber" />
+        <KpiCard label="Tickets ouverts" value={openTickets.toString()} sub={failedPayments > 0 ? `${failedPayments} paiements échoués` : "Aucun problème"} Icon={Ticket} color="red" alert={openTickets > 0} />
       </div>
 
       {/* KPIs financiers */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <RevenueCard label="Commissions ce mois" value={formatFCFA(monthCommissions)} sub="revenus plateforme" icon="💰" highlight />
-        <RevenueCard label="Volume transactionnel" value={formatFCFA(monthlyPayments._sum.amount ?? 0)} sub="paiements réussis ce mois" icon="💳" />
-        <RevenueCard label="Abonnements actifs" value={`${goldCount + proCount}`} sub={`${goldCount} Gold · ${proCount} Pro`} icon="⭐" />
+        <RevenueCard label="Commissions ce mois" value={formatFCFA(monthCommissions)} sub="revenus plateforme" Icon={Banknote} highlight />
+        <RevenueCard label="Volume transactionnel" value={formatFCFA(monthlyPayments._sum.amount ?? 0)} sub="paiements réussis ce mois" Icon={CreditCard} />
+        <RevenueCard label="Abonnements actifs" value={`${goldCount + proCount}`} sub={`${goldCount} Gold · ${proCount} Pro`} Icon={Star} />
       </div>
 
       {/* Zone de gestion principale */}
@@ -285,16 +288,18 @@ export default async function AdminDashboard() {
         <h2 className="text-sm font-semibold uppercase tracking-widest text-[var(--color-muted-foreground)] mb-4">Accès rapides</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { href: "/admin/utilisateurs", icon: "👥", label: "Gérer les comptes", sub: `${totalUsers} clients` },
-            { href: "/moderateur/enrollments", icon: "📋", label: "Dossiers prestataires", sub: `${pendingEnrollments} en attente` },
-            { href: "/admin/finances", icon: "💰", label: "Finances", sub: formatFCFA(totalCommissions) + " commissions" },
-            { href: "/admin/parametres", icon: "⚙️", label: "Paramètres", sub: "Commission, plans" },
-          ].map((a) => (
-            <Link key={a.href} href={a.href}
-              className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] p-4 hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all">
-              <p className="text-2xl mb-2">{a.icon}</p>
-              <p className="font-semibold text-[var(--color-foreground)] text-sm">{a.label}</p>
-              <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">{a.sub}</p>
+            { href: "/admin/utilisateurs", Icon: Users2, label: "Gérer les comptes", sub: `${totalUsers} clients` },
+            { href: "/moderateur/enrollments", Icon: ClipboardList, label: "Dossiers prestataires", sub: `${pendingEnrollments} en attente` },
+            { href: "/admin/finances", Icon: TrendingUp, label: "Finances", sub: formatFCFA(totalCommissions) + " commissions" },
+            { href: "/admin/parametres", Icon: Settings, label: "Paramètres", sub: "Commission, plans" },
+          ].map(({ href, Icon: Icon2, label, sub }) => (
+            <Link key={href} href={href}
+              className="bg-[var(--color-card)] rounded-2xl border border-[var(--color-border)] p-4 hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all cursor-pointer">
+              <div className="w-9 h-9 rounded-xl bg-[var(--color-cream)] flex items-center justify-center mb-3">
+                <Icon2 size={18} className="text-[var(--color-primary)]" strokeWidth={1.5} />
+              </div>
+              <p className="font-semibold text-[var(--color-foreground)] text-sm">{label}</p>
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">{sub}</p>
             </Link>
           ))}
         </div>
@@ -303,8 +308,8 @@ export default async function AdminDashboard() {
   );
 }
 
-function KpiCard({ label, value, sub, icon, color, alert }: {
-  label: string; value: string; sub: string; icon: string;
+function KpiCard({ label, value, sub, Icon, color, alert }: {
+  label: string; value: string; sub: string; Icon: LucideIcon;
   color: "blue" | "purple" | "amber" | "red"; alert?: boolean;
 }) {
   const colors = {
@@ -315,7 +320,9 @@ function KpiCard({ label, value, sub, icon, color, alert }: {
   };
   return (
     <div className={`bg-[var(--color-card)] rounded-2xl border p-5 ${alert ? "border-amber-300" : "border-[var(--color-border)]"}`}>
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg mb-3 ${colors[color]}`}>{icon}</div>
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${colors[color]}`}>
+        <Icon size={18} strokeWidth={1.5} />
+      </div>
       <p className="text-2xl font-display font-semibold text-[var(--color-foreground)]">{value}</p>
       <p className="text-sm font-medium text-[var(--color-foreground)] mt-0.5">{label}</p>
       <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">{sub}</p>
@@ -323,12 +330,14 @@ function KpiCard({ label, value, sub, icon, color, alert }: {
   );
 }
 
-function RevenueCard({ label, value, sub, icon, highlight }: {
-  label: string; value: string; sub: string; icon: string; highlight?: boolean;
+function RevenueCard({ label, value, sub, Icon, highlight }: {
+  label: string; value: string; sub: string; Icon: LucideIcon; highlight?: boolean;
 }) {
   return (
-    <div className={`rounded-2xl border p-5 ${highlight ? "jam-gradient border-transparent text-white" : "bg-[var(--color-card)] border-[var(--color-border)]"}`}>
-      <p className="text-2xl mb-1">{icon}</p>
+    <div className={`rounded-2xl border p-5 ${highlight ? "jam-gradient border-transparent" : "bg-[var(--color-card)] border-[var(--color-border)]"}`}>
+      <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${highlight ? "bg-white/20" : "bg-[var(--color-cream)]"}`}>
+        <Icon size={17} strokeWidth={1.5} className={highlight ? "text-white" : "text-[var(--color-primary)]"} />
+      </div>
       <p className={`text-2xl font-display font-semibold ${highlight ? "text-white" : "text-[var(--color-foreground)]"}`}>{value}</p>
       <p className={`text-sm font-medium mt-0.5 ${highlight ? "text-white" : "text-[var(--color-foreground)]"}`}>{label}</p>
       <p className={`text-xs mt-0.5 ${highlight ? "text-white/70" : "text-[var(--color-muted-foreground)]"}`}>{sub}</p>

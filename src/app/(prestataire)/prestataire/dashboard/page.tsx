@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { formatFCFA } from "@/lib/utils";
 import { ManouPro } from "@/components/shared/ManouPro";
 import Link from "next/link";
+import { type LucideIcon, CalendarDays, BarChart2, Banknote, Star, Scissors, ClipboardList, Layers, Clock, AlertTriangle } from "lucide-react";
 
 export default async function PrestataireDashboard() {
   const session = await auth();
@@ -116,18 +117,19 @@ export default async function PrestataireDashboard() {
         </div>
         {pendingBookings > 0 && (
           <Link href="/prestataire/agenda?tab=pending"
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-700 text-sm font-medium hover:bg-amber-200 transition-colors">
-            ⏰ {pendingBookings} en attente
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 text-amber-700 text-sm font-medium hover:bg-amber-200 transition-colors">
+            <Clock size={14} strokeWidth={2} />
+            {pendingBookings} en attente
           </Link>
         )}
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Aujourd'hui" value={todayBookings} icon="📅" sub="réservations" />
-        <StatCard label="Ce mois" value={monthBookings} icon="📊" sub="nouvelles résas" />
-        <StatCard label="CA ce mois" value={formatFCFA(monthRevenue._sum.prestataireNet ?? 0)} icon="💰" sub="après commission" highlight />
-        <StatCard label="Note" value={prestataire.rating > 0 ? `${prestataire.rating.toFixed(1)} ★` : "—"} icon="⭐" sub={`${prestataire._count.reviews} avis`} />
+        <StatCard label="Aujourd'hui" value={todayBookings} Icon={CalendarDays} sub="réservations" />
+        <StatCard label="Ce mois" value={monthBookings} Icon={BarChart2} sub="nouvelles résas" />
+        <StatCard label="CA ce mois" value={formatFCFA(monthRevenue._sum.prestataireNet ?? 0)} Icon={Banknote} sub="après commission" highlight />
+        <StatCard label="Note" value={prestataire.rating > 0 ? `${prestataire.rating.toFixed(1)} ★` : "—"} Icon={Star} sub={`${prestataire._count.reviews} avis`} />
       </div>
 
       {/* CA + Stats grid */}
@@ -182,8 +184,9 @@ export default async function PrestataireDashboard() {
           </div>
           {plan !== "GOLD" && cap && capPct >= 70 && (
             <Link href="/prestataire/abonnement"
-              className="mt-4 block text-center py-2 rounded-xl text-xs font-medium text-white jam-gradient hover:opacity-90">
-              {capPct >= 90 ? "🚨 Limite atteinte — Upgrader" : "⚠️ Bientôt la limite — Upgrader"}
+              className="mt-4 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-medium text-white jam-gradient hover:opacity-90 transition-opacity">
+              <AlertTriangle size={12} strokeWidth={2} />
+              {capPct >= 90 ? "Limite atteinte — Upgrader" : "Bientôt la limite — Upgrader"}
             </Link>
           )}
         </div>
@@ -198,8 +201,10 @@ export default async function PrestataireDashboard() {
         <div className="divide-y divide-[var(--color-border)]">
           {recentBookings.length === 0 && (
             <div className="px-6 py-10 text-center">
-              <p className="text-3xl mb-2">📅</p>
-              <p className="text-sm text-[var(--color-muted-foreground)]">Aucune réservation pour l'instant.</p>
+              <div className="w-10 h-10 rounded-full bg-[var(--color-cream)] flex items-center justify-center mx-auto mb-2">
+                <CalendarDays size={18} className="text-[var(--color-muted-foreground)]" strokeWidth={1.5} />
+              </div>
+              <p className="text-sm text-[var(--color-muted-foreground)]">Aucune réservation pour l&apos;instant.</p>
             </div>
           )}
           {recentBookings.map((b) => {
@@ -236,16 +241,18 @@ export default async function PrestataireDashboard() {
       {/* Quick actions */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { href: "/prestataire/services/nouveau", icon: "✂️", label: "Nouveau service", sub: "Ajoutez une prestation" },
-          { href: "/prestataire/services", icon: "📝", label: "Mes services", sub: "Modifier prix, photos" },
-          { href: "/prestataire/agenda?tab=pending", icon: "📋", label: "Gérer l'agenda", sub: "Confirmer les demandes" },
-          { href: "/prestataire/abonnement", icon: "⭐", label: "Mon abonnement", sub: `Plan ${plan}` },
-        ].map((a) => (
-          <Link key={a.href} href={a.href}
-            className="bg-white rounded-2xl border border-[var(--color-border)] p-4 hover:border-[var(--color-primary)]/40 hover:shadow-sm transition-all">
-            <p className="text-xl mb-1">{a.icon}</p>
-            <p className="font-semibold text-[var(--color-foreground)] text-sm">{a.label}</p>
-            <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">{a.sub}</p>
+          { href: "/prestataire/services/nouveau", Icon: Scissors, label: "Nouveau service", sub: "Ajoutez une prestation" },
+          { href: "/prestataire/services", Icon: Layers, label: "Mes services", sub: "Modifier prix, photos" },
+          { href: "/prestataire/agenda?tab=pending", Icon: ClipboardList, label: "Gérer l'agenda", sub: "Confirmer les demandes" },
+          { href: "/prestataire/abonnement", Icon: Star, label: "Mon abonnement", sub: `Plan ${plan}` },
+        ].map(({ href, Icon: Icon2, label, sub }) => (
+          <Link key={href} href={href}
+            className="bg-white rounded-2xl border border-[var(--color-border)] p-4 hover:border-[var(--color-primary)]/40 hover:shadow-sm transition-all cursor-pointer">
+            <div className="w-9 h-9 rounded-xl bg-[var(--color-cream)] flex items-center justify-center mb-2">
+              <Icon2 size={17} className="text-[var(--color-primary)]" strokeWidth={1.5} />
+            </div>
+            <p className="font-semibold text-[var(--color-foreground)] text-sm">{label}</p>
+            <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">{sub}</p>
           </Link>
         ))}
       </div>
@@ -253,12 +260,14 @@ export default async function PrestataireDashboard() {
   );
 }
 
-function StatCard({ label, value, icon, sub, highlight }: {
-  label: string; value: string | number; icon: string; sub: string; highlight?: boolean;
+function StatCard({ label, value, Icon, sub, highlight }: {
+  label: string; value: string | number; Icon: LucideIcon; sub: string; highlight?: boolean;
 }) {
   return (
-    <div className={`rounded-2xl border p-5 ${highlight ? "jam-gradient text-white border-transparent" : "bg-white border-[var(--color-border)]"}`}>
-      <p className="text-2xl mb-1">{icon}</p>
+    <div className={`rounded-2xl border p-5 ${highlight ? "jam-gradient border-transparent" : "bg-white border-[var(--color-border)]"}`}>
+      <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${highlight ? "bg-white/20" : "bg-[var(--color-cream)]"}`}>
+        <Icon size={17} strokeWidth={1.5} className={highlight ? "text-white" : "text-[var(--color-primary)]"} />
+      </div>
       <p className={`text-xl font-display font-semibold ${highlight ? "text-white" : "text-[var(--color-foreground)]"}`}>{value}</p>
       <p className={`text-sm font-medium mt-0.5 ${highlight ? "text-white" : "text-[var(--color-foreground)]"}`}>{label}</p>
       <p className={`text-xs mt-0.5 ${highlight ? "text-white/70" : "text-[var(--color-muted-foreground)]"}`}>{sub}</p>

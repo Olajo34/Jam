@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import CategoriesSection from "./CategoriesSection";
 import { MobileMenuButton } from "@/components/shared/MobileMenuButton";
+import { Search, CalendarDays, CreditCard } from "lucide-react";
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1527203561188-dae1bc1a417f?w=420&q=80",
@@ -275,19 +276,17 @@ export default async function HomePage() {
 
           <div className="grid sm:grid-cols-3 gap-12">
             {[
-              { n: "01", title: "Trouvez", desc: "Recherchez par catégorie, ville ou activez la géolocalisation pour voir les prestataires près de vous.", icon: "🔍" },
-              { n: "02", title: "Réservez", desc: "Choisissez votre prestation et votre créneau en quelques secondes, sans téléphone.", icon: "📅" },
-              { n: "03", title: "Payez", desc: "Réglez en toute sécurité via Momo, Orange Money, Wave ou Moov.", icon: "💳" },
+              { n: "01", title: "Trouvez", desc: "Recherchez par catégorie, ville ou activez la géolocalisation pour voir les prestataires près de vous.", Icon: Search },
+              { n: "02", title: "Réservez", desc: "Choisissez votre prestation et votre créneau en quelques secondes, sans téléphone.", Icon: CalendarDays },
+              { n: "03", title: "Payez", desc: "Réglez en toute sécurité via Momo, Orange Money, Wave ou Moov.", Icon: CreditCard },
             ].map((step, i) => (
               <div key={step.n} className="flex flex-col" data-animate data-delay={i}>
-                {/* Numéro + ligne dorée */}
                 <div className="flex items-center gap-4 mb-6">
                   <span className="font-display text-5xl font-light text-[var(--color-secondary)] leading-none">{step.n}</span>
                   <div className="flex-1 h-px bg-gradient-to-r from-[var(--color-secondary)] to-transparent opacity-40" />
                 </div>
-                {/* Icône dans un cercle */}
-                <div className="w-14 h-14 rounded-2xl bg-[var(--color-card)] border border-[var(--color-border)] flex items-center justify-center text-2xl mb-5 shadow-sm">
-                  {step.icon}
+                <div className="w-14 h-14 rounded-2xl bg-[var(--color-card)] border border-[var(--color-border)] flex items-center justify-center mb-5 shadow-sm">
+                  <step.Icon size={22} className="text-[var(--color-secondary)]" strokeWidth={1.5} />
                 </div>
                 <h3 className="font-display font-light text-2xl text-[var(--color-foreground)] mb-3 tracking-tight">{step.title}</h3>
                 <p className="text-sm text-[var(--color-muted-foreground)] leading-[1.8]">{step.desc}</p>

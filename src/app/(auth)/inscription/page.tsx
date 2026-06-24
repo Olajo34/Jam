@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { registerUser } from "@/lib/actions/auth";
 import Link from "next/link";
+import { User, Briefcase } from "lucide-react";
 
 export default function InscriptionPage() {
   const [role, setRole] = useState<"USER" | "PRESTATAIRE">("USER");
@@ -25,13 +26,15 @@ export default function InscriptionPage() {
         <button
           type="button"
           onClick={() => setRole("USER")}
-          className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 text-center transition-all ${
+          className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 text-center transition-all cursor-pointer ${
             role === "USER"
               ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
               : "border-[var(--color-border)] hover:border-[var(--color-primary)]/40"
           }`}
         >
-          <span className="text-2xl">👤</span>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${role === "USER" ? "bg-[var(--color-primary)]/10" : "bg-[var(--color-cream)]"}`}>
+            <User size={18} className={role === "USER" ? "text-[var(--color-primary)]" : "text-[var(--color-muted-foreground)]"} strokeWidth={1.5} />
+          </div>
           <span className={`text-sm font-semibold ${role === "USER" ? "text-[var(--color-primary)]" : "text-[var(--color-foreground)]"}`}>
             Client
           </span>
@@ -40,13 +43,15 @@ export default function InscriptionPage() {
         <button
           type="button"
           onClick={() => setRole("PRESTATAIRE")}
-          className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 text-center transition-all ${
+          className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 text-center transition-all cursor-pointer ${
             role === "PRESTATAIRE"
               ? "border-[var(--color-primary)] bg-[var(--color-primary)]/5"
               : "border-[var(--color-border)] hover:border-[var(--color-primary)]/40"
           }`}
         >
-          <span className="text-2xl">💼</span>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${role === "PRESTATAIRE" ? "bg-[var(--color-primary)]/10" : "bg-[var(--color-cream)]"}`}>
+            <Briefcase size={18} className={role === "PRESTATAIRE" ? "text-[var(--color-primary)]" : "text-[var(--color-muted-foreground)]"} strokeWidth={1.5} />
+          </div>
           <span className={`text-sm font-semibold ${role === "PRESTATAIRE" ? "text-[var(--color-primary)]" : "text-[var(--color-foreground)]"}`}>
             Prestataire
           </span>

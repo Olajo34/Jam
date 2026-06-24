@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
 
 export const metadata = { title: "À propos — Jam" };
 
@@ -9,7 +10,10 @@ export default function AProposPage() {
       <header className="bg-[var(--color-card)]/80 backdrop-blur border-b border-[var(--color-border)] px-5 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/"><Image src="/jam-logo-primary.svg" alt="Jam" width={80} height={30} /></Link>
-          <Link href="/" className="text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]">← Accueil</Link>
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors">
+            <ArrowLeft size={14} strokeWidth={2} />
+            Accueil
+          </Link>
         </div>
       </header>
 
