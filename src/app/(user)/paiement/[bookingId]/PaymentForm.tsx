@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { formatFCFA } from "@/lib/utils";
 
 const OPERATORS = [
-  { id: "MTN_MOMO_CMR", label: "MTN Mobile Money", flag: "🟡", hint: "65X, 67X, 68X" },
+  { id: "MTN_MOMO_CMR", label: "Momo", flag: "🟡", hint: "65X, 67X, 68X" },
   { id: "ORANGE_CMR", label: "Orange Money", flag: "🟠", hint: "69X, 655, 656" },
 ];
 

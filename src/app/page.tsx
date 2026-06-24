@@ -63,7 +63,7 @@ const TESTIMONIALS = [
     name: "Aminata K.",
     role: "Cliente",
     city: "Douala",
-    text: "J'ai trouvé ma coiffeuse en 2 minutes et payé via MTN MoMo. Jam c'est la révolution.",
+    text: "J'ai trouvé ma coiffeuse en 2 minutes et payé via Momo. Jam c'est la révolution.",
     img: "https://images.unsplash.com/photo-1713845784497-fe3d7ed176d8?w=80&q=75",
   },
   {
@@ -206,8 +206,8 @@ export default async function HomePage() {
             <div className="animate-fade-up animate-fade-up-delay-4 flex flex-wrap items-center gap-3 mt-6">
               <span className="text-xs text-[var(--color-muted-foreground)]">Paiement via</span>
               {[
-                { name: "MTN", bg: "#FFC107", color: "#000" },
-                { name: "Orange", bg: "#FF6600", color: "#fff" },
+                { name: "Momo", bg: "#FFC107", color: "#000" },
+                { name: "Orange Money", bg: "#FF6600", color: "#fff" },
                 { name: "Wave", bg: "#1A9BF4", color: "#fff" },
                 { name: "Moov", bg: "#009B4E", color: "#fff" },
               ].map((p) => (
@@ -277,7 +277,7 @@ export default async function HomePage() {
             {[
               { n: "01", title: "Trouvez", desc: "Recherchez par catégorie, ville ou activez la géolocalisation pour voir les prestataires près de vous.", icon: "🔍" },
               { n: "02", title: "Réservez", desc: "Choisissez votre prestation et votre créneau en quelques secondes, sans téléphone.", icon: "📅" },
-              { n: "03", title: "Payez", desc: "Réglez en toute sécurité via MTN Mobile Money, Orange Money, Wave ou Moov.", icon: "💳" },
+              { n: "03", title: "Payez", desc: "Réglez en toute sécurité via Momo, Orange Money, Wave ou Moov.", icon: "💳" },
             ].map((step, i) => (
               <div key={step.n} className="flex flex-col" data-animate data-delay={i}>
                 {/* Numéro + ligne dorée */}

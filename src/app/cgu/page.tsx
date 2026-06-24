@@ -37,7 +37,7 @@ export default function CguPage() {
           },
           {
             title: "4. Réservations et paiements",
-            content: `Les réservations sont confirmées après paiement via Mobile Money (MTN MoMo, Orange Money). Jam prélève une commission sur chaque transaction confirmée. Les remboursements sont soumis à la politique d'annulation.`,
+            content: `Les réservations sont confirmées après paiement via Mobile Money (Momo, Orange Money). Jam prélève une commission sur chaque transaction confirmée. Les remboursements sont soumis à la politique d'annulation.`,
           },
           {
             title: "5. Responsabilités",

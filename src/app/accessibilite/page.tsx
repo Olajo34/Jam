@@ -40,7 +40,7 @@ export default function AccessibilitePage() {
           {
             icon: "💳",
             title: "Paiement inclusif",
-            content: "La plateforme accepte MTN Mobile Money et Orange Money, accessibles sans carte bancaire, permettant à tout détenteur d'un téléphone mobile de réserver et payer.",
+            content: "La plateforme accepte Momo et Orange Money, accessibles sans carte bancaire, permettant à tout détenteur d'un téléphone mobile de réserver et payer.",
           },
           {
             icon: "♿",
