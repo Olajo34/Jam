@@ -18,10 +18,10 @@ export default async function UserLayout({ children }: { children: React.ReactNo
             <Image src="/jam-logo-primary.svg" alt="Jam" width={80} height={30} />
           </Link>
           <nav className="flex items-center gap-5 text-sm">
-            <Link href="/recherche" className="text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]">
+            <Link href="/recherche" className="hidden sm:inline text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]">
               Explorer
             </Link>
-            <Link href="/reservations" className="text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]">
+            <Link href="/reservations" className="hidden sm:inline text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]">
               Mes réservations
             </Link>
             {session ? (
