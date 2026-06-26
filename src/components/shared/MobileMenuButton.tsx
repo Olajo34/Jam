@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 
 interface Props {
@@ -8,6 +9,9 @@ interface Props {
 
 export function MobileMenuButton({ hasSession }: Props) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -16,32 +20,9 @@ export function MobileMenuButton({ hasSession }: Props) {
 
   const close = () => setOpen(false);
 
-  return (
-    <>
-      <button
-        onClick={() => setOpen(!open)}
-        className="sm:hidden z-[110] relative flex flex-col justify-center items-center w-10 h-10 gap-[5px]"
-        aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-      >
-        <span
-          className={`block h-px w-5 bg-[var(--color-foreground)] transition-all duration-300 origin-center ${
-            open ? "rotate-45 translate-y-[6px]" : ""
-          }`}
-        />
-        <span
-          className={`block h-px w-5 bg-[var(--color-foreground)] transition-all duration-200 ${
-            open ? "opacity-0 scale-x-0" : ""
-          }`}
-        />
-        <span
-          className={`block h-px w-5 bg-[var(--color-foreground)] transition-all duration-300 origin-center ${
-            open ? "-rotate-45 -translate-y-[6px]" : ""
-          }`}
-        />
-      </button>
-
-      {open && (
-        <div className="fixed inset-0 z-[100] bg-[var(--color-cream)] flex flex-col pt-24 px-8 sm:hidden">
+  const overlay = mounted && open
+    ? createPortal(
+        <div className="fixed inset-0 z-[9999] bg-[var(--color-cream)] flex flex-col pt-24 px-8 sm:hidden">
           <nav className="flex flex-col">
             {[
               { href: "/recherche", label: "Explorer" },
@@ -72,8 +53,36 @@ export function MobileMenuButton({ hasSession }: Props) {
               Beauté &amp; Bien-être · Zone CEMAC
             </p>
           </div>
-        </div>
-      )}
+        </div>,
+        document.body
+      )
+    : null;
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(!open)}
+        className="sm:hidden z-[10000] relative flex flex-col justify-center items-center w-10 h-10 gap-[5px]"
+        aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+      >
+        <span
+          className={`block h-px w-5 bg-[var(--color-foreground)] transition-all duration-300 origin-center ${
+            open ? "rotate-45 translate-y-[6px]" : ""
+          }`}
+        />
+        <span
+          className={`block h-px w-5 bg-[var(--color-foreground)] transition-all duration-200 ${
+            open ? "opacity-0 scale-x-0" : ""
+          }`}
+        />
+        <span
+          className={`block h-px w-5 bg-[var(--color-foreground)] transition-all duration-300 origin-center ${
+            open ? "-rotate-45 -translate-y-[6px]" : ""
+          }`}
+        />
+      </button>
+
+      {overlay}
     </>
   );
 }
